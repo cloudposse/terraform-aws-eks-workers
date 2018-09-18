@@ -64,7 +64,7 @@ variable "cluster_endpoint" {
 
 variable "cluster_certificate_authority_data" {
   type        = "string"
-  description = "The base64 encoded certificate data required to communicate with your cluster"
+  description = "The base64 encoded certificate data required to communicate with the cluster"
 }
 
 variable "cluster_security_group_id" {

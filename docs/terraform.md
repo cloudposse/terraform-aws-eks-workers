@@ -9,7 +9,7 @@
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | string | `true` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | list | `<list>` | no |
-| cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with your cluster | string | - | yes |
+| cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
 | cluster_endpoint | EKS cluster endpoint | string | - | yes |
 | cluster_name | The name of the EKS cluster | string | - | yes |
 | cluster_security_group_id | Security Group ID of the EKS cluster | string | - | yes |
