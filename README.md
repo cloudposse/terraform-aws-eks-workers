@@ -49,7 +49,7 @@ locals {
   # The usage of the specific kubernetes.io/cluster/* resource tags below are required
   # for EKS and Kubernetes to discover and manage networking resources
   # https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#base-vpc-networking
-  shared_networking_tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))}"
+  tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))}"
 }
 
 data "aws_availability_zones" "available" {}
@@ -60,7 +60,7 @@ module "vpc" {
   stage      = "${var.stage}"
   name       = "${var.name}"
   attributes = "${var.attributes}"
-  tags       = "${local.shared_networking_tags}"
+  tags       = "${local.tags}"
   cidr_block = "10.0.0.0/16"
 }
 
@@ -71,7 +71,7 @@ module "subnets" {
   stage               = "${var.stage}"
   name                = "${var.name}"
   attributes          = "${var.attributes}"
-  tags                = "${local.shared_networking_tags}"
+  tags                = "${local.tags}"
   region              = "${var.region}"
   vpc_id              = "${module.vpc.vpc_id}"
   igw_id              = "${module.vpc.igw_id}"
@@ -86,6 +86,7 @@ module "eks_workers" {
   name                               = "${var.name}"
   attributes                         = "${var.attributes}"
   tags                               = "${var.tags}"
+  image_id                           = "${var.image_id}"
   instance_type                      = "${var.instance_type}"
   vpc_id                             = "${module.vpc.vpc_id}"
   subnet_ids                         = ["${module.subnets.public_subnet_ids}"]
@@ -157,10 +158,11 @@ Available targets:
 | force_delete | Allows deleting the autoscaling group without waiting for all instances in the pool to terminate. You can force an autoscaling group to delete even if it's in the process of scaling a resource. Normally, Terraform drains all the instances before deleting the group. This bypasses that behavior and potentially leaves resources dangling | string | `false` | no |
 | health_check_grace_period | Time (in seconds) after instance comes into service before checking health | string | `300` | no |
 | health_check_type | Controls how health checking is done. Valid values are `EC2` or `ELB` | string | `EC2` | no |
+| image_id | EC2 image ID to launch. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images | string | - | yes |
 | instance_initiated_shutdown_behavior | Shutdown behavior for the instances. Can be `stop` or `terminate` | string | `terminate` | no |
 | instance_market_options | The market (purchasing) option for the instances | list | `<list>` | no |
 | instance_type | Instance type to launch | string | - | yes |
-| key_name | The SSH key name that should be used for the instance | string | `` | no |
+| key_name | SSH key name that should be used for the instance | string | `` | no |
 | load_balancers | A list of elastic load balancer names to add to the autoscaling group names. Only valid for classic load balancers. For ALBs, use `target_group_arns` instead | list | `<list>` | no |
 | max_size | The maximum size of the autoscale group | string | - | yes |
 | metrics_granularity | The granularity to associate with the metrics to collect. The only valid value is 1Minute | string | `1Minute` | no |

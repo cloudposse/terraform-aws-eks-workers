@@ -129,32 +129,22 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
   type              = "ingress"
 }
 
-data "aws_ami" "eks_worker" {
-  count = "${var.enabled == "true" ? 1 : 0}"
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-v*"]
-  }
-
-  most_recent = true
-  owners      = ["602401143452"] # Amazon
-}
-
 module "autoscale_group" {
   source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.1.1"
 
-  enabled   = "${var.enabled}"
-  namespace = "${var.namespace}"
-  stage     = "${var.stage}"
-  name      = "${var.name}"
+  enabled    = "${var.enabled}"
+  namespace  = "${var.namespace}"
+  stage      = "${var.stage}"
+  name       = "${var.name}"
+  delimiter  = "${var.delimiter}"
+  attributes = "${var.attributes}"
 
-  image_id                  = "${join("", data.aws_ami.eks_worker.*.id)}"
   iam_instance_profile_name = "${join("", aws_iam_instance_profile.default.*.name)}"
   security_group_ids        = ["${join("", aws_security_group.default.*.id)}"]
   user_data_base64          = "${base64encode(local.userdata)}"
   tags                      = "${module.label.tags}"
 
+  image_id                                = "${var.image_id}"
   instance_type                           = "${var.instance_type}"
   subnet_ids                              = ["${var.subnet_ids}"]
   min_size                                = "${var.min_size}"

@@ -87,6 +87,11 @@ variable "instance_initiated_shutdown_behavior" {
   default     = "terminate"
 }
 
+variable "image_id" {
+  type        = "string"
+  description = "EC2 image ID to launch. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images"
+}
+
 variable "instance_type" {
   type        = "string"
   description = "Instance type to launch"
@@ -94,7 +99,7 @@ variable "instance_type" {
 
 variable "key_name" {
   type        = "string"
-  description = "The SSH key name that should be used for the instance"
+  description = "SSH key name that should be used for the instance"
   default     = ""
 }
 

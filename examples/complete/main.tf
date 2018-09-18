@@ -6,7 +6,7 @@ locals {
   # The usage of the specific kubernetes.io/cluster/* resource tags below are required
   # for EKS and Kubernetes to discover and manage networking resources
   # https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#base-vpc-networking
-  shared_networking_tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))}"
+  tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))}"
 }
 
 data "aws_availability_zones" "available" {}
@@ -17,7 +17,7 @@ module "vpc" {
   stage      = "${var.stage}"
   name       = "${var.name}"
   attributes = "${var.attributes}"
-  tags       = "${local.shared_networking_tags}"
+  tags       = "${local.tags}"
   cidr_block = "10.0.0.0/16"
 }
 
@@ -28,7 +28,7 @@ module "subnets" {
   stage               = "${var.stage}"
   name                = "${var.name}"
   attributes          = "${var.attributes}"
-  tags                = "${local.shared_networking_tags}"
+  tags                = "${local.tags}"
   region              = "${var.region}"
   vpc_id              = "${module.vpc.vpc_id}"
   igw_id              = "${module.vpc.igw_id}"
@@ -43,6 +43,7 @@ module "eks_workers" {
   name                               = "${var.name}"
   attributes                         = "${var.attributes}"
   tags                               = "${var.tags}"
+  image_id                           = "${var.image_id}"
   instance_type                      = "${var.instance_type}"
   vpc_id                             = "${module.vpc.vpc_id}"
   subnet_ids                         = ["${module.subnets.public_subnet_ids}"]
