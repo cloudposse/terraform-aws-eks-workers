@@ -7,6 +7,8 @@
 
 Terraform module to provision AWS resources to run EC2 worker nodes for [Elastic Container Service for Kubernetes](https://aws.amazon.com/eks/).
 
+Instantiate it multiple times to create many EKS worker node pools with specific settings such as GPUs, EC2 instance types, or autoscale parameters.
+
 
 ---
 
