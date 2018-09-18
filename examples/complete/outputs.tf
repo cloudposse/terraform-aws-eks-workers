@@ -67,3 +67,8 @@ output "security_group_name" {
   description = "Name of the worker nodes Security Group"
   value       = "${module.eks_workers.security_group_name}"
 }
+
+output "config_map_aws_auth" {
+  description = "Kubernetes ConfigMap configuration for worker nodes to join the EKS cluster"
+  value       = "${module.eks_workers.config_map_aws_auth}"
+}
