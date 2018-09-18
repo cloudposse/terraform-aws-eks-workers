@@ -25,12 +25,12 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 ## Introduction
 
-The module does the following:
+The module provisions the following resources:
 
-- Provisions an IAM Role and Instance Profile to allow Kubernetes nodes to access other AWS services
-- Provisions a Security Group with rules for EKS workers to allow networking traffic
-- Provisions an AutoScaling Group with Launch Template to configure and launch worker instances
-- Creates AutoScaling Policies and CloudWatch Metric Alarms to monitor CPU utilization on the EC2 instances and scale the number of instance in the AutoScaling Group up or down.
+- IAM Role and Instance Profile to allow Kubernetes nodes to access other AWS services
+- Security Group with rules for EKS workers to allow networking traffic
+- AutoScaling Group with Launch Template to configure and launch worker instances
+- AutoScaling Policies and CloudWatch Metric Alarms to monitor CPU utilization on the EC2 instances and scale the number of instance in the AutoScaling Group up or down.
 If you don't want to use the provided functionality, or want to provide your own policies, disable it by setting the variable `autoscaling_policies_enabled` to `"false"`.
 
 ## Usage
