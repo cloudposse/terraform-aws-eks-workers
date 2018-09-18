@@ -89,7 +89,14 @@ variable "instance_initiated_shutdown_behavior" {
 
 variable "image_id" {
   type        = "string"
-  description = "EC2 image ID to launch. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images"
+  description = "EC2 image ID to launch. If not provided, the module will lookup the most recent EKS AMI. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images"
+  default     = ""
+}
+
+variable "eks_worker_ami_name_filter" {
+  type        = "string"
+  description = "AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided"
+  default     = "amazon-eks-node-v*"
 }
 
 variable "instance_type" {

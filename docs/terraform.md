@@ -26,6 +26,7 @@
 | delimiter | Delimiter to be used between `name`, `namespace`, `stage`, etc. | string | `-` | no |
 | disable_api_termination | If `true`, enables EC2 Instance Termination Protection | string | `false` | no |
 | ebs_optimized | If true, the launched EC2 instance will be EBS-optimized | string | `false` | no |
+| eks_worker_ami_name_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | string | `amazon-eks-node-v*` | no |
 | elastic_gpu_specifications | Specifications of Elastic GPU to attach to the instances | list | `<list>` | no |
 | enable_monitoring | Enable/disable detailed monitoring | string | `true` | no |
 | enabled | Whether to create the resources. Set to `false` to prevent the module from creating any resources | string | `true` | no |
@@ -34,7 +35,7 @@
 | force_delete | Allows deleting the autoscaling group without waiting for all instances in the pool to terminate. You can force an autoscaling group to delete even if it's in the process of scaling a resource. Normally, Terraform drains all the instances before deleting the group. This bypasses that behavior and potentially leaves resources dangling | string | `false` | no |
 | health_check_grace_period | Time (in seconds) after instance comes into service before checking health | string | `300` | no |
 | health_check_type | Controls how health checking is done. Valid values are `EC2` or `ELB` | string | `EC2` | no |
-| image_id | EC2 image ID to launch. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images | string | - | yes |
+| image_id | EC2 image ID to launch. If not provided, the module will lookup the most recent EKS AMI. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images | string | `` | no |
 | instance_initiated_shutdown_behavior | Shutdown behavior for the instances. Can be `stop` or `terminate` | string | `terminate` | no |
 | instance_market_options | The market (purchasing) option for the instances | list | `<list>` | no |
 | instance_type | Instance type to launch | string | - | yes |

@@ -44,6 +44,7 @@ module "eks_workers" {
   attributes                         = "${var.attributes}"
   tags                               = "${var.tags}"
   image_id                           = "${var.image_id}"
+  eks_worker_ami_name_filter         = "${var.eks_worker_ami_name_filter}"
   instance_type                      = "${var.instance_type}"
   vpc_id                             = "${module.vpc.vpc_id}"
   subnet_ids                         = ["${module.subnets.public_subnet_ids}"]
