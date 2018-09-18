@@ -7,16 +7,6 @@
 
 Terraform module to provision AWS resources to run EC2 worker nodes for [Elastic Container Service for Kubernetes](https://aws.amazon.com/eks/).
 
-The module will:
-
-- Provision an IAM Role to allow Kubernetes nodes to access other AWS services
-- Provision a Security Group for EKS Workers to allow networking traffic
-- Provision an AutoScaling Group with Launch Template to configure and launch worker instances
-- Find the latest Amazon AMI for EKS and assign it to the Auto Scaling Group
-
-The module also creates AutoScaling Policies and CloudWatch Metric Alarms to monitor CPU utilization on the EC2 instances and scale the number of instance in the AutoScaling Group up or down.
-If you don't want to use the provided functionality, or want to provide your own policies, disable it by setting the variable `autoscaling_policies_enabled` to `"false"`.
-
 
 ---
 
@@ -33,6 +23,17 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 
 
+## Introduction
+
+The module does the following:
+
+- Provisions an IAM Role and Instance Profile to allow Kubernetes nodes to access other AWS services
+- Provisions a Security Group with rules for EKS workers to allow networking traffic
+- Provisions an AutoScaling Group with Launch Template to configure and launch worker instances
+- Finds the latest Amazon AMI for EKS and assign it to the AutoScaling Group
+
+The module also creates AutoScaling Policies and CloudWatch Metric Alarms to monitor CPU utilization on the EC2 instances and scale the number of instance in the AutoScaling Group up or down.
+If you don't want to use the provided functionality, or want to provide your own policies, disable it by setting the variable `autoscaling_policies_enabled` to `"false"`.
 
 ## Usage
 
@@ -44,6 +45,13 @@ provider "aws" {
   region = "${var.region}"
 }
 
+locals {
+  # The usage of the specific kubernetes.io/cluster/* resource tags below are required
+  # for EKS and Kubernetes to discover and manage networking resources
+  # https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#base-vpc-networking
+  shared_networking_tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))}"
+}
+
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
@@ -51,6 +59,8 @@ module "vpc" {
   namespace  = "${var.namespace}"
   stage      = "${var.stage}"
   name       = "${var.name}"
+  attributes = "${var.attributes}"
+  tags       = "${local.shared_networking_tags}"
   cidr_block = "10.0.0.0/16"
 }
 
@@ -60,6 +70,8 @@ module "subnets" {
   namespace           = "${var.namespace}"
   stage               = "${var.stage}"
   name                = "${var.name}"
+  attributes          = "${var.attributes}"
+  tags                = "${local.shared_networking_tags}"
   region              = "${var.region}"
   vpc_id              = "${module.vpc.vpc_id}"
   igw_id              = "${module.vpc.igw_id}"
@@ -72,6 +84,8 @@ module "eks_workers" {
   namespace                          = "${var.namespace}"
   stage                              = "${var.stage}"
   name                               = "${var.name}"
+  attributes                         = "${var.attributes}"
+  tags                               = "${var.tags}"
   instance_type                      = "${var.instance_type}"
   vpc_id                             = "${module.vpc.vpc_id}"
   subnet_ids                         = ["${module.subnets.public_subnet_ids}"]
@@ -203,6 +217,12 @@ Available targets:
 Check out these related projects.
 
 - [terraform-aws-ec2-autoscale-group](https://github.com/cloudposse/terraform-aws-ec2-autoscale-group) - Terraform module to provision Auto Scaling Group and Launch Template on AWS
+- [terraform-aws-ecs-container-definition](https://github.com/cloudposse/terraform-aws-ecs-container-definition) - Terraform module to generate well-formed JSON documents (container definitions) that are passed to the  aws_ecs_task_definition Terraform resource
+- [terraform-aws-ecs-alb-service-task](https://github.com/cloudposse/terraform-aws-ecs-alb-service-task) - Terraform module which implements an ECS service which exposes a web service via ALB
+- [erraform-aws-ecs-web-app](https://github.com/cloudposse/terraform-aws-ecs-web-app) - Terraform module that implements a web app on ECS and supports autoscaling, CI/CD, monitoring, ALB integration, and much more
+- [terraform-aws-ecs-codepipeline](https://github.com/cloudposse/terraform-aws-ecs-codepipeline) - Terraform module for CI/CD with AWS Code Pipeline and Code Build for ECS
+- [terraform-aws-ecs-cloudwatch-autoscaling](https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-autoscaling) - Terraform module to autoscale ECS Service based on CloudWatch metrics
+- [terraform-aws-ecs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-sns-alarms) - Terraform module to create CloudWatch Alarms on ECS Service level metrics
 - [terraform-aws-ec2-instance](https://github.com/cloudposse/terraform-aws-ec2-instance) - Terraform module for providing a general purpose EC2 instance
 - [terraform-aws-ec2-instance-group](https://github.com/cloudposse/terraform-aws-ec2-instance-group) - Terraform module for provisioning multiple general purpose EC2 hosts for stateful applications
 
