@@ -372,3 +372,9 @@ variable "cpu_utilization_low_statistic" {
   default     = "Average"
   description = "The statistic to apply to the alarm's associated metric. Either of the following is supported: `SampleCount`, `Average`, `Sum`, `Minimum`, `Maximum`"
 }
+
+variable "bootstrap_extra_args" {
+  type        = "string"
+  default     = ""
+  description = "Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods."
+}

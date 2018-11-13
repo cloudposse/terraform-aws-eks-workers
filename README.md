@@ -13,7 +13,7 @@ Instantiate it multiple times to create many EKS worker node pools with specific
 
 ---
 
-This project is part of our comprehensive ["SweetOps"](https://docs.cloudposse.com) approach towards DevOps. 
+This project is part of our comprehensive ["SweetOps"](https://docs.cloudposse.com) approach towards DevOps.
 
 
 It's 100% Open Source and licensed under the [APACHE2](LICENSE).
@@ -135,6 +135,7 @@ Available targets:
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | string | `true` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | list | `<list>` | no |
+| bootstrap_extra_args | Extra parameters passed to the bootstrap.sh script in the AMI | string | - | no |
 | cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
 | cluster_endpoint | EKS cluster endpoint | string | - | yes |
 | cluster_name | The name of the EKS cluster | string | - | yes |
@@ -242,9 +243,9 @@ File a GitHub [issue](https://github.com/cloudposse/terraform-aws-eks-workers/is
 
 ## Commercial Support
 
-Work directly with our team of DevOps experts via email, slack, and video conferencing. 
+Work directly with our team of DevOps experts via email, slack, and video conferencing.
 
-We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer. 
+We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer.
 
 [![E-Mail](https://img.shields.io/badge/email-hello@cloudposse.com-blue.svg)](mailto:hello@cloudposse.com)
 
@@ -254,7 +255,7 @@ We provide [*commercial support*][commercial_support] for all of our [Open Sourc
 - **Bug Fixes.** We'll rapidly work to fix any bugs in our projects.
 - **Build New Terraform Modules.** We'll develop original modules to provision infrastructure.
 - **Cloud Architecture.** We'll assist with your cloud strategy and design.
-- **Implementation.** We'll provide hands-on support to implement our reference architectures. 
+- **Implementation.** We'll provide hands-on support to implement our reference architectures.
 
 
 ## Community Forum
@@ -288,9 +289,9 @@ Copyright © 2017-2018 [Cloud Posse, LLC](https://cloudposse.com)
 
 
 
-## License 
+## License
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 See [LICENSE](LICENSE) for full details.
 
@@ -358,5 +359,3 @@ Check out [our other projects][github], [apply for a job][jobs], or [hire us][hi
   [aknysh_avatar]: https://github.com/aknysh.png?size=150
   [goruha_homepage]: https://github.com/goruha
   [goruha_avatar]: https://github.com/goruha.png?size=150
-
-
