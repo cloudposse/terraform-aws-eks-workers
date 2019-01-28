@@ -1,4 +1,3 @@
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -9,7 +8,7 @@
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | string | `true` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | list | `<list>` | no |
-| bootstrap_extra_args | Extra parameters passed to the bootstrap.sh script in the AMI | string | - | no |
+| bootstrap_extra_args | Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods. | string | `` | no |
 | cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
 | cluster_endpoint | EKS cluster endpoint | string | - | yes |
 | cluster_name | The name of the EKS cluster | string | - | yes |
@@ -24,7 +23,7 @@
 | cpu_utilization_low_threshold_percent | The value against which the specified statistic is compared | string | `10` | no |
 | credit_specification | Customize the credit specification of the instances | list | `<list>` | no |
 | default_cooldown | The amount of time, in seconds, after a scaling activity completes before another scaling activity can start | string | `300` | no |
-| delimiter | Delimiter to be used between `name`, `namespace`, `stage`, etc. | string | `-` | no |
+| delimiter | Delimiter to be used between `namespace`, `stage`, `name` and `attributes` | string | `-` | no |
 | disable_api_termination | If `true`, enables EC2 Instance Termination Protection | string | `false` | no |
 | ebs_optimized | If true, the launched EC2 instance will be EBS-optimized | string | `false` | no |
 | eks_worker_ami_name_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | string | `amazon-eks-node-v*` | no |
@@ -63,7 +62,7 @@
 | stage | Stage, e.g. 'prod', 'staging', 'dev', or 'test' | string | - | yes |
 | subnet_ids | A list of subnet IDs to launch resources in | list | - | yes |
 | suspended_processes | A list of processes to suspend for the AutoScaling Group. The allowed values are `Launch`, `Terminate`, `HealthCheck`, `ReplaceUnhealthy`, `AZRebalance`, `AlarmNotification`, `ScheduledActions`, `AddToLoadBalancer`. Note that if you suspend either the `Launch` or `Terminate` process types, it can prevent your autoscaling group from functioning properly. | list | `<list>` | no |
-| tags | Additional tags (e.g. `map('BusinessUnit`,`XYZ`) | map | `<map>` | no |
+| tags | Additional tags (e.g. `{ BusinessUnit = "XYZ" }` | map | `<map>` | no |
 | target_group_arns | A list of aws_alb_target_group ARNs, for use with Application Load Balancing | list | `<list>` | no |
 | termination_policies | A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are `OldestInstance`, `NewestInstance`, `OldestLaunchConfiguration`, `ClosestToNextInstanceHour`, `Default` | list | `<list>` | no |
 | vpc_id | VPC ID for the EKS cluster | string | - | yes |
@@ -89,3 +88,4 @@
 | security_group_arn | ARN of the worker nodes Security Group |
 | security_group_id | ID of the worker nodes Security Group |
 | security_group_name | Name of the worker nodes Security Group |
+

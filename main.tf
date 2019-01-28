@@ -3,7 +3,7 @@ locals {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.6"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.2.1"
   namespace  = "${var.namespace}"
   stage      = "${var.stage}"
   name       = "${var.name}"
@@ -36,7 +36,7 @@ resource "aws_iam_role" "default" {
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
   count      = "${var.enabled == "true" ? 1 : 0}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = "${aws_iam_role.default.name}"
+  role       = "${join("", aws_iam_role.default.*.name)}"
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_cni_policy" {
@@ -133,7 +133,7 @@ data "aws_ami" "eks_worker" {
 }
 
 module "autoscale_group" {
-  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.1.2"
+  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.1.3"
 
   enabled    = "${var.enabled}"
   namespace  = "${var.namespace}"
@@ -215,6 +215,6 @@ data "template_file" "config_map_aws_auth" {
   template = "${file("${path.module}/config_map_aws_auth.tpl")}"
 
   vars {
-    aws_iam_role_arn = "${aws_iam_role.default.arn}"
+    aws_iam_role_arn = "${join("", aws_iam_role.default.*.arn)}"
   }
 }
