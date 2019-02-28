@@ -70,7 +70,7 @@ output "security_group_name" {
 
 output "worker_role_arn" {
   description = "ARN of the worker nodes IAM role"
-  value       = "${aws_iam_role.default.arn}"
+  value       = "${join("", aws_iam_role.default.*.arn)}"
 }
 
 output "config_map_aws_auth" {
