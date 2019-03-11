@@ -229,6 +229,7 @@ Available targets:
 | security_group_arn | ARN of the worker nodes Security Group |
 | security_group_id | ID of the worker nodes Security Group |
 | security_group_name | Name of the worker nodes Security Group |
+| worker_role_arn | ARN of the worker nodes IAM role |
 
 
 
