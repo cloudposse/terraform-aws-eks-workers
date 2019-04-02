@@ -96,7 +96,7 @@ variable "image_id" {
 variable "eks_worker_ami_name_filter" {
   type        = "string"
   description = "AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided"
-  default     = "amazon-eks-node-v*"
+  default     = "amazon-eks-node-*"
 }
 
 variable "instance_type" {
