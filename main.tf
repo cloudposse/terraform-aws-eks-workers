@@ -121,10 +121,10 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 data "aws_ami" "eks_worker" {
-  count = "${var.enabled == "true" && var.image_id == "" ? 1 : 0}"
-  most_recent      = true
-  name_regex       = "^amazon-eks-node-[1-9,\\.]+-v\\d{8}$" 
-  
+  count       = "${var.enabled == "true" && var.image_id == "" ? 1 : 0}"
+  most_recent = true
+  name_regex  = "^amazon-eks-node-[1-9,\\.]+-v\\d{8}$"
+
   filter {
     name   = "name"
     values = ["${var.eks_worker_ami_name_filter}"]
