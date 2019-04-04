@@ -99,6 +99,12 @@ variable "eks_worker_ami_name_filter" {
   default     = "amazon-eks-node-*"
 }
 
+variable "eks_worker_ami_name_regex" {
+  type        = "string"
+  description = "A regex string to apply to the AMI list returned by AWS"
+  default     = "^amazon-eks-node-[1-9,\\.]+-v\\d{8}$"
+}
+
 variable "instance_type" {
   type        = "string"
   description = "Instance type to launch"

@@ -27,6 +27,7 @@
 | disable_api_termination | If `true`, enables EC2 Instance Termination Protection | string | `false` | no |
 | ebs_optimized | If true, the launched EC2 instance will be EBS-optimized | string | `false` | no |
 | eks_worker_ami_name_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | string | `amazon-eks-node-*` | no |
+| eks_worker_ami_name_regex | A regex string to apply to the AMI list returned by AWS | string | `^amazon-eks-node-[1-9,\.]+-v\d{8}$` | no |
 | elastic_gpu_specifications | Specifications of Elastic GPU to attach to the instances | list | `<list>` | no |
 | enable_monitoring | Enable/disable detailed monitoring | string | `true` | no |
 | enabled | Whether to create the resources. Set to `false` to prevent the module from creating any resources | string | `true` | no |
