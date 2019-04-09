@@ -121,7 +121,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 data "aws_ami" "eks_worker" {
-  count = "${var.enabled == "true" && var.use_custom_image_id == "true" ? 1 : 0}"
+  count = "${var.enabled == "true" && var.use_custom_image_id == "false" ? 1 : 0}"
 
   most_recent = true
   name_regex  = "${var.eks_worker_ami_name_regex}"
