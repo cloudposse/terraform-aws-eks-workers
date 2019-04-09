@@ -101,7 +101,13 @@ variable "use_custom_image_id" {
 variable "eks_worker_ami_name_filter" {
   type        = "string"
   description = "AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided"
-  default     = "amazon-eks-node-v*"
+  default     = "amazon-eks-node-*"
+}
+
+variable "eks_worker_ami_name_regex" {
+  type        = "string"
+  description = "A regex string to apply to the AMI list returned by AWS"
+  default     = "^amazon-eks-node-[1-9,\\.]+-v\\d{8}$"
 }
 
 variable "instance_type" {
