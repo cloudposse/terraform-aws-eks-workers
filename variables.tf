@@ -94,8 +94,9 @@ variable "image_id" {
 }
 
 variable "use_custom_image_id" {
+  type        = "string"
   description = "if true will use variable image_id to run EKS workers inside autoscaling group"
-  default     = false
+  default     = "false"
 }
 
 variable "eks_worker_ami_name_filter" {
