@@ -95,7 +95,7 @@ variable "image_id" {
 
 variable "use_custom_image_id" {
   type        = "string"
-  description = "If `true` will use variable `image_id` to run EKS workers inside autoscaling group"
+  description = "If set to `true`, will use variable `image_id` to run EKS workers inside autoscaling group"
   default     = "false"
 }
 
