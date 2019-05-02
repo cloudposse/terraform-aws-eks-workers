@@ -148,6 +148,7 @@ Available targets:
 | associate_public_ip_address | Associate a public IP address with an instance in a VPC | string | `false` | no |
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | string | `true` | no |
+| aws_iam_instance_profile | Use this to provide already existed instance profile that will be used in autoscaling group for EKS workers, if empty will create instance profile for you. | string | `` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | list | `<list>` | no |
 | bootstrap_extra_args | Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods. | string | `` | no |
 | cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
@@ -208,6 +209,7 @@ Available targets:
 | target_group_arns | A list of aws_alb_target_group ARNs, for use with Application Load Balancing | list | `<list>` | no |
 | termination_policies | A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are `OldestInstance`, `NewestInstance`, `OldestLaunchConfiguration`, `ClosestToNextInstanceHour`, `Default` | list | `<list>` | no |
 | use_custom_image_id | If set to `true`, will use variable `image_id` to run EKS workers inside autoscaling group | string | `false` | no |
+| use_provided_aws_iam_instance_profile | When `true`, will use already existed instance profile and provided in variable `aws_iam_instance_profile` | string | `false` | no |
 | vpc_id | VPC ID for the EKS cluster | string | - | yes |
 | wait_for_capacity_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. Setting this to '0' causes Terraform to skip all Capacity Waiting behavior | string | `10m` | no |
 | wait_for_elb_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances in all attached load balancers on both create and update operations. Takes precedence over `min_elb_capacity` behavior | string | `false` | no |
@@ -232,6 +234,7 @@ Available targets:
 | security_group_id | ID of the worker nodes Security Group |
 | security_group_name | Name of the worker nodes Security Group |
 | worker_role_arn | ARN of the worker nodes IAM role |
+| worker_role_name | Name of the worker nodes IAM role |
 
 
 

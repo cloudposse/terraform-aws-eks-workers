@@ -14,7 +14,7 @@ module "label" {
 }
 
 data "aws_iam_policy_document" "assume_role" {
-  count = "${var.enabled == "true" ? 1 : 0}"
+  count = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
 
   statement {
     effect  = "Allow"
@@ -28,31 +28,31 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "default" {
-  count              = "${var.enabled == "true" ? 1 : 0}"
+  count              = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
   name               = "${module.label.id}"
   assume_role_policy = "${join("", data.aws_iam_policy_document.assume_role.*.json)}"
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
-  count      = "${var.enabled == "true" ? 1 : 0}"
+  count      = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = "${join("", aws_iam_role.default.*.name)}"
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_cni_policy" {
-  count      = "${var.enabled == "true" ? 1 : 0}"
+  count      = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = "${join("", aws_iam_role.default.*.name)}"
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_only" {
-  count      = "${var.enabled == "true" ? 1 : 0}"
+  count      = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = "${join("", aws_iam_role.default.*.name)}"
 }
 
 resource "aws_iam_instance_profile" "default" {
-  count = "${var.enabled == "true" ? 1 : 0}"
+  count = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
   name  = "${module.label.id}"
   role  = "${join("", aws_iam_role.default.*.name)}"
 }
@@ -146,7 +146,7 @@ module "autoscale_group" {
   attributes = "${var.attributes}"
 
   image_id                  = "${var.use_custom_image_id == "true" ? var.image_id : join("", data.aws_ami.eks_worker.*.id)}"
-  iam_instance_profile_name = "${join("", aws_iam_instance_profile.default.*.name)}"
+  iam_instance_profile_name = "${var.use_provided_aws_iam_instance_profile == "false" ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile}"
   security_group_ids        = ["${join("", aws_security_group.default.*.id)}"]
   user_data_base64          = "${base64encode(join("", data.template_file.userdata.*.rendered))}"
   tags                      = "${module.label.tags}"

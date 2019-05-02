@@ -390,3 +390,15 @@ variable "bootstrap_extra_args" {
   default     = ""
   description = "Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods."
 }
+
+variable "aws_iam_instance_profile" {
+  type        = "string"
+  default     = ""
+  description = "Use this to provide already existed instance profile that will be used in autoscaling group for EKS workers, if empty will create instance profile for you."
+}
+
+variable "use_provided_aws_iam_instance_profile" {
+  type        = "string"
+  default     = "false"
+  description = "When `true`, will use already existed instance profile provided in variable `aws_iam_instance_profile`"
+}
