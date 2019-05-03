@@ -148,6 +148,7 @@ Available targets:
 | associate_public_ip_address | Associate a public IP address with an instance in a VPC | string | `false` | no |
 | attributes | Additional attributes (e.g. `1`) | list | `<list>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | string | `true` | no |
+| aws_iam_instance_profile_name | The name of the existing instance profile that will be used in autoscaling group for EKS workers. If empty will create a new instance profile. | string | `` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | list | `<list>` | no |
 | bootstrap_extra_args | Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods. | string | `` | no |
 | cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
@@ -232,6 +233,7 @@ Available targets:
 | security_group_id | ID of the worker nodes Security Group |
 | security_group_name | Name of the worker nodes Security Group |
 | worker_role_arn | ARN of the worker nodes IAM role |
+| worker_role_name | Name of the worker nodes IAM role |
 
 
 

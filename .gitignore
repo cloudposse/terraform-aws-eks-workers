@@ -13,3 +13,6 @@
 
 **/.build-harness
 **/build-harness
+
+# vim editor
+*.swp
