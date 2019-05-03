@@ -396,3 +396,15 @@ variable "aws_iam_instance_profile_name" {
   default     = ""
   description = "The name of the existing instance profile that will be used in autoscaling group for EKS workers. If empty will create a new instance profile."
 }
+
+variable "workers_security_group_id" {
+  type        = "string"
+  default     = ""
+  description = "The name of the existing security group that will be used in autoscaling group for EKS workers. If empty will create a new security group."
+}
+
+variable "additional_security_group_ids" {
+  type        = "list"
+  default     = []
+  description = "Additional list of security groups that will be attached to autoscaling group."
+}

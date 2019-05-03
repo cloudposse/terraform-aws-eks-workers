@@ -2,6 +2,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| additional_security_group_ids | Additional list of security groups that will be attached to autoscaling group. | list | `<list>` | no |
 | allowed_cidr_blocks | List of CIDR blocks to be allowed to connect to the worker nodes | list | `<list>` | no |
 | allowed_security_groups | List of Security Group IDs to be allowed to connect to the worker nodes | list | `<list>` | no |
 | associate_public_ip_address | Associate a public IP address with an instance in a VPC | string | `false` | no |
@@ -71,6 +72,7 @@
 | vpc_id | VPC ID for the EKS cluster | string | - | yes |
 | wait_for_capacity_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. Setting this to '0' causes Terraform to skip all Capacity Waiting behavior | string | `10m` | no |
 | wait_for_elb_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances in all attached load balancers on both create and update operations. Takes precedence over `min_elb_capacity` behavior | string | `false` | no |
+| workers_security_group_id | The name of the existing security group that will be used in autoscaling group for EKS workers. If empty will create a new security group. | string | `` | no |
 
 ## Outputs
 
