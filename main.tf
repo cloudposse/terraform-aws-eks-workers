@@ -1,5 +1,5 @@
 locals {
-  tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "owned"))}"
+  tags                          = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "owned"))}"
   use_existing_instance_profile = "${var.aws_iam_instance_profile_name != "" ? "true" : "false"}"
 }
 
