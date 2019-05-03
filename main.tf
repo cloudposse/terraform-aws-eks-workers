@@ -213,11 +213,16 @@ data "template_file" "userdata" {
   }
 }
 
+data "aws_iam_instance_profile" "default" {
+  count = "${var.enabled == "true" && var.use_provided_aws_iam_instance_profile == "false" ? 1 : 0}"
+  name  = "${var.aws_iam_instance_profile}"
+}
+
 data "template_file" "config_map_aws_auth" {
   count    = "${var.enabled == "true" ? 1 : 0}"
   template = "${file("${path.module}/config_map_aws_auth.tpl")}"
 
   vars {
-    aws_iam_role_arn = "${join("", aws_iam_role.default.*.arn)}"
+    aws_iam_role_arn = "${var.use_provided_aws_iam_instance_profile == "false" ? join("", aws_iam_role.default.*.arn) : data.aws_iam_instance_profile.default.role_arn}"
   }
 }
