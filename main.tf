@@ -2,7 +2,7 @@ locals {
   tags                                = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "owned"))}"
   use_existing_instance_profile       = "${var.aws_iam_instance_profile_name != "" ? "true" : "false"}"
   use_existing_workers_security_group = "${var.workers_security_group_id != "" ? "true" : "false"}"
-  use_custom_image_id = "${var.image_id != "" ? "true" : "false"}"
+  use_custom_image_id                 = "${var.image_id != "" ? "true" : "false"}"
 }
 
 module "label" {
