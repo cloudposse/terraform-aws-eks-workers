@@ -93,12 +93,6 @@ variable "image_id" {
   default     = ""
 }
 
-variable "use_custom_image_id" {
-  type        = "string"
-  description = "If set to `true`, will use variable `image_id` to run EKS workers inside autoscaling group"
-  default     = "false"
-}
-
 variable "eks_worker_ami_name_filter" {
   type        = "string"
   description = "AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided"

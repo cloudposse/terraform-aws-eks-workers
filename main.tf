@@ -2,6 +2,7 @@ locals {
   tags                                = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "owned"))}"
   use_existing_instance_profile       = "${var.aws_iam_instance_profile_name != "" ? "true" : "false"}"
   use_existing_workers_security_group = "${var.workers_security_group_id != "" ? "true" : "false"}"
+  use_custom_image_id = "${var.image_id != "" ? "true" : "false"}"
 }
 
 module "label" {
@@ -123,7 +124,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 data "aws_ami" "eks_worker" {
-  count = "${var.enabled == "true" && var.use_custom_image_id == "false" ? 1 : 0}"
+  count = "${var.enabled == "true" && local.use_custom_image_id == "false" ? 1 : 0}"
 
   most_recent = true
   name_regex  = "${var.eks_worker_ami_name_regex}"
@@ -147,9 +148,9 @@ module "autoscale_group" {
   delimiter  = "${var.delimiter}"
   attributes = "${var.attributes}"
 
-  image_id                  = "${var.use_custom_image_id == "true" ? var.image_id : join("", data.aws_ami.eks_worker.*.id)}"
+  image_id                  = "${local.use_custom_image_id == "true" ? var.image_id : join("", data.aws_ami.eks_worker.*.id)}"
   iam_instance_profile_name = "${local.use_existing_instance_profile == "false" ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name}"
-  security_group_ids        = ["${compact(concat(local.use_existing_workers_security_group == "false" ? join("", aws_security_group.default.*.id) : var.workers_security_group_id}", "${var.additional_security_group_ids}))"]
+  security_group_ids        = ["${compact(concat(list(local.use_existing_workers_security_group == "false" ? join("", aws_security_group.default.*.id) : var.workers_security_group_id), var.additional_security_group_ids))}"]
   user_data_base64          = "${base64encode(join("", data.template_file.userdata.*.rendered))}"
   tags                      = "${module.label.tags}"
 
