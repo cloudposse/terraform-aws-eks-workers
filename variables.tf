@@ -93,6 +93,12 @@ variable "image_id" {
   default     = ""
 }
 
+variable "use_custom_image_id" {
+  type        = "string"
+  description = "If set to `true`, will use variable `image_id` to run EKS workers inside autoscaling group"
+  default     = "false"
+}
+
 variable "eks_worker_ami_name_filter" {
   type        = "string"
   description = "AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided"
@@ -397,8 +403,26 @@ variable "workers_security_group_id" {
   description = "The name of the existing security group that will be used in autoscaling group for EKS workers. If empty will create a new security group."
 }
 
+variable "use_existing_security_group" {
+  type        = "string"
+  description = "If set to `true`, will use variable `workers_security_group_id` to run EKS workers using existing security group that was created outside this module, workaround to not get error like `count cannot be computed`"
+  default     = "false"
+}
+
 variable "additional_security_group_ids" {
   type        = "list"
   default     = []
   description = "Additional list of security groups that will be attached to autoscaling group."
+}
+
+variable "use_existing_aws_iam_instance_profile" {
+  type        = "string"
+  description = "If set to `true`, will use variable `aws_iam_instance_profile_name` to run EKS workers using existing aws instance profile that was created outside this module, workaround to not get error like `count cannot be computed`"
+  default     = "false"
+}
+
+variable "workers_role_policy_arns" {
+  type        = "list"
+  default     = []
+  description = "List of role polcicies taht will be attached to workers default role on creation"
 }
