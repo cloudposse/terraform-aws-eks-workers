@@ -132,7 +132,6 @@ data "aws_ami" "eks_worker" {
     values = ["${var.eks_worker_ami_name_filter}"]
   }
 
-  most_recent = true
   owners      = ["602401143452"] # Amazon
 }
 
