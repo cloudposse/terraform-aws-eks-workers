@@ -2,6 +2,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
+| additional_security_group_ids | Additional list of security groups that will be attached to the autoscaling group | list | `<list>` | no |
 | allowed_cidr_blocks | List of CIDR blocks to be allowed to connect to the worker nodes | list | `<list>` | no |
 | allowed_security_groups | List of Security Group IDs to be allowed to connect to the worker nodes | list | `<list>` | no |
 | associate_public_ip_address | Associate a public IP address with an instance in a VPC | string | `false` | no |
@@ -68,9 +69,13 @@
 | target_group_arns | A list of aws_alb_target_group ARNs, for use with Application Load Balancing | list | `<list>` | no |
 | termination_policies | A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are `OldestInstance`, `NewestInstance`, `OldestLaunchConfiguration`, `ClosestToNextInstanceHour`, `Default` | list | `<list>` | no |
 | use_custom_image_id | If set to `true`, will use variable `image_id` to run EKS workers inside autoscaling group | string | `false` | no |
+| use_existing_aws_iam_instance_profile | If set to `true`, will use variable `aws_iam_instance_profile_name` to run EKS workers using an existing AWS instance profile that was created outside of this module, workaround for error like `count cannot be computed` | string | `false` | no |
+| use_existing_security_group | If set to `true`, will use variable `workers_security_group_id` to run EKS workers using an existing security group that was created outside of this module, workaround for errors like `count cannot be computed` | string | `false` | no |
 | vpc_id | VPC ID for the EKS cluster | string | - | yes |
 | wait_for_capacity_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. Setting this to '0' causes Terraform to skip all Capacity Waiting behavior | string | `10m` | no |
 | wait_for_elb_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances in all attached load balancers on both create and update operations. Takes precedence over `min_elb_capacity` behavior | string | `false` | no |
+| workers_role_policy_arns | List of policy ARNs that will be attached to the workers default role on creation | list | `<list>` | no |
+| workers_security_group_id | The name of the existing security group that will be used in autoscaling group for EKS workers. If empty, a new security group will be created | string | `` | no |
 
 ## Outputs
 
