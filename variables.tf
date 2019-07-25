@@ -424,5 +424,5 @@ variable "use_existing_aws_iam_instance_profile" {
 variable "workers_role_policy_arns" {
   type        = "list"
   default     = []
-  description = "List of role polcicies taht will be attached to workers default role on creation"
+  description = "List of role polcicies that will be attached to workers default role on creation"
 }

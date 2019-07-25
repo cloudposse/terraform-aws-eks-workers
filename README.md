@@ -215,7 +215,7 @@ Available targets:
 | vpc_id | VPC ID for the EKS cluster | string | - | yes |
 | wait_for_capacity_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. Setting this to '0' causes Terraform to skip all Capacity Waiting behavior | string | `10m` | no |
 | wait_for_elb_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances in all attached load balancers on both create and update operations. Takes precedence over `min_elb_capacity` behavior | string | `false` | no |
-| workers_role_policy_arns | List of role polcicies taht will be attached to workers default role on creation | list | `<list>` | no |
+| workers_role_policy_arns | List of role polcicies that will be attached to workers default role on creation | list | `<list>` | no |
 | workers_security_group_id | The name of the existing security group that will be used in autoscaling group for EKS workers. If empty will create a new security group. | string | `` | no |
 
 ## Outputs
