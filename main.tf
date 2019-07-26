@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
 }
 
 resource "aws_iam_role_policy_attachment" "existing_policies_attach_to_eks_workers_role" {
-  count      = "${var.enabled == "true" && var.use_existing_aws_iam_instance_profile== "false" ? length(var.workers_role_policy_arns) : 0}"
+  count      = "${var.enabled == "true" && var.use_existing_aws_iam_instance_profile== "false" ? var.workers_role_policy_arns_count : 0}"
   policy_arn = "${element(var.workers_role_policy_arns, count.index)}"
   role       = "${join("", aws_iam_role.default.*.name)}"
 }

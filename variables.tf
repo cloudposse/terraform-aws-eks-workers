@@ -426,3 +426,9 @@ variable "workers_role_policy_arns" {
   default     = []
   description = "List of policy ARNs that will be attached to the workers default role on creation"
 }
+
+variable "workers_role_policy_arns_count" {
+  type        = "string"
+  default     = "0"
+  description = "Count of policy ARNs that will be attached to the workers default role on creation. Needed to prevent Terraform error `count can't be computed`"
+}
