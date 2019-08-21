@@ -57,7 +57,7 @@ resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_on
 }
 
 resource "aws_iam_role_policy_attachment" "existing_policies_attach_to_eks_workers_role" {
-  count      = var.enabled && var.aws_iam_instance_profile_name == null ? 1 : 0
+  count      = var.enabled && var.aws_iam_instance_profile_name == null ? var.workers_role_policy_arns_count : 0
   policy_arn = element(var.workers_role_policy_arns, count.index)
   role       = join("", aws_iam_role.default.*.name)
 }
@@ -121,7 +121,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = var.enabled && var.workers_security_group_id == null ? 1 : 0
+  count             = var.enabled && var.workers_security_group_id == null && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
   description       = "Allow inbound traffic from CIDR blocks"
   from_port         = 0
   to_port           = 0
@@ -243,4 +243,3 @@ data "template_file" "config_map_aws_auth" {
     aws_iam_role_arn = var.aws_iam_instance_profile_name != null ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
   }
 }
-
