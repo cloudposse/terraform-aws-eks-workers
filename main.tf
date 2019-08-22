@@ -3,7 +3,7 @@ locals {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.2.1"
+  source     = "git::https://github.com/blackbookusa/terraform-terraform-label.git?ref=tags/0.2.1"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
@@ -141,7 +141,7 @@ data "aws_ami" "eks_worker" {
 }
 
 module "autoscale_group" {
-  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.1.3"
+  source = "git::https://github.com/blackbookusa/terraform-aws-ec2-autoscale-group.git?ref=tags/0.1.3"
 
   enabled    = var.enabled
   namespace  = var.namespace
