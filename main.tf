@@ -19,7 +19,7 @@ module "label" {
 }
 
 data "aws_iam_policy_document" "assume_role" {
-  count = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? 1 : 0
+  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
 
   statement {
     effect  = "Allow"
@@ -33,43 +33,43 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "default" {
-  count              = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? 1 : 0
+  count              = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   name               = module.label.id
   assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
-  count      = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? 1 : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_cni_policy" {
-  count      = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? 1 : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_only" {
-  count      = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? 1 : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role_policy_attachment" "existing_policies_attach_to_eks_workers_role" {
-  count      = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? var.workers_role_policy_arns_count : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? var.workers_role_policy_arns_count : 0
   policy_arn = element(var.workers_role_policy_arns, count.index)
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_instance_profile" "default" {
-  count = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "false" ? 1 : 0
+  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   name  = module.label.id
   role  = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_security_group" "default" {
-  count       = var.enabled == "true" && var.use_existing_security_group == "false" ? 1 : 0
+  count       = var.enabled && var.use_existing_security_group ? 1 : 0
   name        = module.label.id
   description = "Security Group for EKS worker nodes"
   vpc_id      = var.vpc_id
@@ -77,7 +77,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = var.enabled == "true" && var.use_existing_security_group == "false" ? 1 : 0
+  count             = var.enabled && var.use_existing_security_group ? 1 : 0
   description       = "Allow all egress traffic"
   from_port         = 0
   to_port           = 0
@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "aws_security_group_rule" "ingress_self" {
-  count                    = var.enabled == "true" && var.use_existing_security_group == "false" ? 1 : 0
+  count                    = var.enabled && var.use_existing_security_group ? 1 : 0
   description              = "Allow nodes to communicate with each other"
   from_port                = 0
   to_port                  = 65535
@@ -99,7 +99,7 @@ resource "aws_security_group_rule" "ingress_self" {
 }
 
 resource "aws_security_group_rule" "ingress_cluster" {
-  count                    = var.enabled == "true" && var.use_existing_security_group == "false" ? 1 : 0
+  count                    = var.enabled && var.use_existing_security_group ? 1 : 0
   description              = "Allow worker kubelets and pods to receive communication from the cluster control plane"
   from_port                = 0
   to_port                  = 65535
@@ -110,7 +110,7 @@ resource "aws_security_group_rule" "ingress_cluster" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = var.enabled == "true" && var.use_existing_security_group == "false" ? length(var.allowed_security_groups) : 0
+  count                    = var.enabled && var.use_existing_security_group ? length(var.allowed_security_groups) : 0
   description              = "Allow inbound traffic from existing Security Groups"
   from_port                = 0
   to_port                  = 65535
@@ -121,7 +121,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = var.enabled == "true" && length(var.allowed_cidr_blocks) > 0 && var.use_existing_security_group == "false" ? 1 : 0
+  count             = var.enabled && length(var.allowed_cidr_blocks) > 0 && var.use_existing_security_group ? 1 : 0
   description       = "Allow inbound traffic from CIDR blocks"
   from_port         = 0
   to_port           = 0
@@ -132,7 +132,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 data "aws_ami" "eks_worker" {
-  count = var.enabled == "true" && var.use_custom_image_id == "false" ? 1 : 0
+  count = var.enabled && var.use_custom_image_id ? 1 : 0
 
   most_recent = true
   name_regex  = var.eks_worker_ami_name_regex
@@ -155,13 +155,13 @@ module "autoscale_group" {
   delimiter  = var.delimiter
   attributes = var.attributes
 
-  image_id                  = var.use_custom_image_id == "true" ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
-  iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == "false" ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
+  image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
+  iam_instance_profile_name = var.use_existing_aws_iam_instance_profile ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
 
   security_group_ids = [compact(
     concat(
       [
-        var.use_existing_security_group == "false" ? join("", aws_security_group.default.*.id) : var.workers_security_group_id,
+        var.use_existing_security_group ? join("", aws_security_group.default.*.id) : var.workers_security_group_id,
       ],
       var.additional_security_group_ids
     )
@@ -221,7 +221,7 @@ module "autoscale_group" {
 }
 
 data "template_file" "userdata" {
-  count    = var.enabled == "true" ? 1 : 0
+  count    = var.enabled ? 1 : 0
   template = file("${path.module}/userdata.tpl")
 
   vars = {
@@ -233,15 +233,15 @@ data "template_file" "userdata" {
 }
 
 data "aws_iam_instance_profile" "default" {
-  count = var.enabled == "true" && var.use_existing_aws_iam_instance_profile == "true" ? 1 : 0
+  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   name  = var.aws_iam_instance_profile_name
 }
 
 data "template_file" "config_map_aws_auth" {
-  count    = var.enabled == "true" ? 1 : 0
+  count    = var.enabled ? 1 : 0
   template = file("${path.module}/config_map_aws_auth.tpl")
 
   vars = {
-    aws_iam_role_arn = var.use_existing_aws_iam_instance_profile == "true" ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
+    aws_iam_role_arn = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
   }
 }
