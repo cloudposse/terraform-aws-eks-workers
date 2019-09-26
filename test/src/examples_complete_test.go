@@ -43,10 +43,20 @@ func TestExamplesComplete(t *testing.T) {
 	// Run `terraform output` to get the value of an output variable
 	autoscalingGroupName := terraform.Output(t, terraformOptions, "autoscaling_group_name")
 	// Verify we're getting back the outputs we expect
-	assert.Contains(t, autoscalingGroupName, "eg-test-ec2-autoscale-group")
+	assert.Contains(t, autoscalingGroupName, "eg-test-eks-workers")
 
 	// Run `terraform output` to get the value of an output variable
 	launchTemplateArn := terraform.Output(t, terraformOptions, "launch_template_arn")
 	// Verify we're getting back the outputs we expect
 	assert.Contains(t, launchTemplateArn, "arn:aws:ec2:us-east-2:126450723953:launch-template")
+
+	// Run `terraform output` to get the value of an output variable
+	securityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
+	// Verify we're getting back the outputs we expect
+	assert.Equal(t, "eg-test-eks-workers-workers", securityGroupName)
+
+	// Run `terraform output` to get the value of an output variable
+	workerRoleName := terraform.Output(t, terraformOptions, "worker_role_name")
+	// Verify we're getting back the outputs we expect
+	assert.Equal(t, "eg-test-eks-workers-workers", workerRoleName)
 }
