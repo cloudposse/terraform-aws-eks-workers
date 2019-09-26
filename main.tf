@@ -5,6 +5,9 @@ locals {
       "kubernetes.io/cluster/${var.cluster_name}" = "owned"
     }
   )
+
+  workers_role_arn  = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
+  workers_role_name = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_name) : join("", aws_iam_role.default.*.name)
 }
 
 module "label" {
@@ -146,6 +149,23 @@ data "aws_ami" "eks_worker" {
   owners = ["602401143452"] # Amazon
 }
 
+data "template_file" "userdata" {
+  count    = var.enabled ? 1 : 0
+  template = file("${path.module}/userdata.tpl")
+
+  vars = {
+    cluster_endpoint           = var.cluster_endpoint
+    certificate_authority_data = var.cluster_certificate_authority_data
+    cluster_name               = var.cluster_name
+    bootstrap_extra_args       = var.bootstrap_extra_args
+  }
+}
+
+data "aws_iam_instance_profile" "default" {
+  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  name  = var.aws_iam_instance_profile_name
+}
+
 module "autoscale_group" {
   source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.2.0"
 
@@ -219,30 +239,4 @@ module "autoscale_group" {
   cpu_utilization_low_period_seconds      = var.cpu_utilization_low_period_seconds
   cpu_utilization_low_statistic           = var.cpu_utilization_low_statistic
   cpu_utilization_low_threshold_percent   = var.cpu_utilization_low_threshold_percent
-}
-
-data "template_file" "userdata" {
-  count    = var.enabled ? 1 : 0
-  template = file("${path.module}/userdata.tpl")
-
-  vars = {
-    cluster_endpoint           = var.cluster_endpoint
-    certificate_authority_data = var.cluster_certificate_authority_data
-    cluster_name               = var.cluster_name
-    bootstrap_extra_args       = var.bootstrap_extra_args
-  }
-}
-
-data "aws_iam_instance_profile" "default" {
-  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
-  name  = var.aws_iam_instance_profile_name
-}
-
-data "template_file" "config_map_aws_auth" {
-  count    = var.enabled ? 1 : 0
-  template = file("${path.module}/config_map_aws_auth.tpl")
-
-  vars = {
-    aws_iam_role_arn = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
-  }
 }

@@ -227,14 +227,13 @@ Available targets:
 | autoscaling_group_max_size | The maximum size of the AutoScaling Group |
 | autoscaling_group_min_size | The minimum size of the AutoScaling Group |
 | autoscaling_group_name | The AutoScaling Group name |
-| config_map_aws_auth | Kubernetes ConfigMap configuration for worker nodes to join the EKS cluster. https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#required-kubernetes-configuration-to-join-worker-nodes |
 | launch_template_arn | ARN of the launch template |
 | launch_template_id | The ID of the launch template |
 | security_group_arn | ARN of the worker nodes Security Group |
 | security_group_id | ID of the worker nodes Security Group |
 | security_group_name | Name of the worker nodes Security Group |
-| worker_role_arn | ARN of the worker nodes IAM role |
-| worker_role_name | Name of the worker nodes IAM role |
+| workers_role_arn | ARN of the worker nodes IAM role |
+| workers_role_name | Name of the worker nodes IAM role |
 
 
 
