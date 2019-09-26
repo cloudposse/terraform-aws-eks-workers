@@ -79,7 +79,7 @@ usage: |-
 
   ```hcl
     provider "aws" {
-    region = var.region
+      region = var.region
     }
 
     locals {

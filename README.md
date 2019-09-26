@@ -63,7 +63,7 @@ For a complete example, see [examples/complete](examples/complete)
 
 ```hcl
   provider "aws" {
-  region = var.region
+    region = var.region
   }
 
   locals {
