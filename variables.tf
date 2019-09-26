@@ -10,12 +10,6 @@ variable "stage" {
   default     = ""
 }
 
-variable "environment" {
-  type        = string
-  default     = ""
-  description = "Environment, e.g. 'testing', 'UAT'"
-}
-
 variable "name" {
   type        = string
   default     = "app"

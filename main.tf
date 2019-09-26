@@ -13,13 +13,13 @@ module "label" {
   stage      = var.stage
   name       = var.name
   delimiter  = var.delimiter
-  attributes = [compact(concat(var.attributes, ["workers"]))]
+  attributes = compact(concat(var.attributes, ["workers"]))
   tags       = local.tags
   enabled    = var.enabled
 }
 
 data "aws_iam_policy_document" "assume_role" {
-  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  count = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
 
   statement {
     effect  = "Allow"
@@ -33,43 +33,43 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "default" {
-  count              = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  count              = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
   name               = module.label.id
   assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
-  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_cni_policy" {
-  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_ec2_container_registry_read_only" {
-  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role_policy_attachment" "existing_policies_attach_to_eks_workers_role" {
-  count      = var.enabled && var.use_existing_aws_iam_instance_profile ? var.workers_role_policy_arns_count : 0
-  policy_arn = element(var.workers_role_policy_arns, count.index)
+  count      = var.enabled && var.use_existing_aws_iam_instance_profile == false ? var.workers_role_policy_arns_count : 0
+  policy_arn = var.workers_role_policy_arns[count.index]
   role       = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_instance_profile" "default" {
-  count = var.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
+  count = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
   name  = module.label.id
   role  = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_security_group" "default" {
-  count       = var.enabled && var.use_existing_security_group ? 1 : 0
+  count       = var.enabled && var.use_existing_security_group == false ? 1 : 0
   name        = module.label.id
   description = "Security Group for EKS worker nodes"
   vpc_id      = var.vpc_id
@@ -77,7 +77,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = var.enabled && var.use_existing_security_group ? 1 : 0
+  count             = var.enabled && var.use_existing_security_group == false ? 1 : 0
   description       = "Allow all egress traffic"
   from_port         = 0
   to_port           = 0
@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "aws_security_group_rule" "ingress_self" {
-  count                    = var.enabled && var.use_existing_security_group ? 1 : 0
+  count                    = var.enabled && var.use_existing_security_group == false ? 1 : 0
   description              = "Allow nodes to communicate with each other"
   from_port                = 0
   to_port                  = 65535
@@ -99,7 +99,7 @@ resource "aws_security_group_rule" "ingress_self" {
 }
 
 resource "aws_security_group_rule" "ingress_cluster" {
-  count                    = var.enabled && var.use_existing_security_group ? 1 : 0
+  count                    = var.enabled && var.cluster_security_group_id != "" && var.use_existing_security_group == false ? 1 : 0
   description              = "Allow worker kubelets and pods to receive communication from the cluster control plane"
   from_port                = 0
   to_port                  = 65535
@@ -110,18 +110,18 @@ resource "aws_security_group_rule" "ingress_cluster" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = var.enabled && var.use_existing_security_group ? length(var.allowed_security_groups) : 0
+  count                    = var.enabled && var.use_existing_security_group == false ? length(var.allowed_security_groups) : 0
   description              = "Allow inbound traffic from existing Security Groups"
   from_port                = 0
   to_port                  = 65535
   protocol                 = "-1"
-  source_security_group_id = element(var.allowed_security_groups, count.index)
+  source_security_group_id = var.allowed_security_groups[count.index]
   security_group_id        = join("", aws_security_group.default.*.id)
   type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = var.enabled && length(var.allowed_cidr_blocks) > 0 && var.use_existing_security_group ? 1 : 0
+  count             = var.enabled && length(var.allowed_cidr_blocks) > 0 && var.use_existing_security_group == false ? 1 : 0
   description       = "Allow inbound traffic from CIDR blocks"
   from_port         = 0
   to_port           = 0
@@ -156,47 +156,47 @@ module "autoscale_group" {
   attributes = var.attributes
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
-  iam_instance_profile_name = var.use_existing_aws_iam_instance_profile ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
+  iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
 
-  security_group_ids = [compact(
+  security_group_ids = compact(
     concat(
       [
-        var.use_existing_security_group ? join("", aws_security_group.default.*.id) : var.workers_security_group_id,
+        var.use_existing_security_group == false ? join("", aws_security_group.default.*.id) : var.workers_security_group_id
       ],
       var.additional_security_group_ids
     )
-  )]
+  )
 
   user_data_base64 = base64encode(join("", data.template_file.userdata.*.rendered))
   tags             = module.label.tags
 
   instance_type                           = var.instance_type
-  subnet_ids                              = [var.subnet_ids]
+  subnet_ids                              = var.subnet_ids
   min_size                                = var.min_size
   max_size                                = var.max_size
   associate_public_ip_address             = var.associate_public_ip_address
-  block_device_mappings                   = [var.block_device_mappings]
-  credit_specification                    = [var.credit_specification]
+  block_device_mappings                   = var.block_device_mappings
+  credit_specification                    = var.credit_specification
   disable_api_termination                 = var.disable_api_termination
   ebs_optimized                           = var.ebs_optimized
-  elastic_gpu_specifications              = [var.elastic_gpu_specifications]
+  elastic_gpu_specifications              = var.elastic_gpu_specifications
   instance_initiated_shutdown_behavior    = var.instance_initiated_shutdown_behavior
-  instance_market_options                 = [var.instance_market_options]
+  instance_market_options                 = var.instance_market_options
   key_name                                = var.key_name
-  placement                               = [var.placement]
+  placement                               = var.placement
   enable_monitoring                       = var.enable_monitoring
-  load_balancers                          = [var.load_balancers]
+  load_balancers                          = var.load_balancers
   health_check_grace_period               = var.health_check_grace_period
   health_check_type                       = var.health_check_type
   min_elb_capacity                        = var.min_elb_capacity
   wait_for_elb_capacity                   = var.wait_for_elb_capacity
-  target_group_arns                       = [var.target_group_arns]
+  target_group_arns                       = var.target_group_arns
   default_cooldown                        = var.default_cooldown
   force_delete                            = var.force_delete
   termination_policies                    = var.termination_policies
   suspended_processes                     = var.suspended_processes
   placement_group                         = var.placement_group
-  enabled_metrics                         = [var.enabled_metrics]
+  enabled_metrics                         = var.enabled_metrics
   metrics_granularity                     = var.metrics_granularity
   wait_for_capacity_timeout               = var.wait_for_capacity_timeout
   protect_from_scale_in                   = var.protect_from_scale_in
