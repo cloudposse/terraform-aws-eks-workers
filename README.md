@@ -152,6 +152,7 @@ Available targets:
 | cluster_endpoint | EKS cluster endpoint | string | - | yes |
 | cluster_name | The name of the EKS cluster | string | - | yes |
 | cluster_security_group_id | Security Group ID of the EKS cluster | string | - | yes |
+| cluster_security_group_ingress_enabled | Whether to enable the EKS cluster Security Group as ingress to workers Security Group | bool | `true` | no |
 | cpu_utilization_high_evaluation_periods | The number of periods over which data is compared to the specified threshold | number | `2` | no |
 | cpu_utilization_high_period_seconds | The period in seconds over which the specified statistic is applied | number | `300` | no |
 | cpu_utilization_high_statistic | The statistic to apply to the alarm's associated metric. Either of the following is supported: `SampleCount`, `Average`, `Sum`, `Minimum`, `Maximum` | string | `Average` | no |
