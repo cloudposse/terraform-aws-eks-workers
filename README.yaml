@@ -18,9 +18,9 @@ github_repo: cloudposse/terraform-aws-eks-workers
 
 # Badges to display
 badges:
-  - name: "Build Status"
-    image: "https://travis-ci.org/cloudposse/terraform-aws-eks-workers.svg?branch=master"
-    url: "https://travis-ci.org/cloudposse/terraform-aws-eks-workers"
+  - name: "Codefresh Build Status"
+    image: "https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-eks-workers?type=cf-1"
+    url: "https://g.codefresh.io/public/accounts/cloudposse/pipelines/5d8c0fe0c9daf686b5858180"
   - name: "Latest Release"
     image: "https://img.shields.io/github/release/cloudposse/terraform-aws-eks-workers.svg"
     url: "https://github.com/cloudposse/terraform-aws-eks-workers/releases/latest"
@@ -38,7 +38,7 @@ related:
   - name: "terraform-aws-ecs-alb-service-task"
     description: "Terraform module which implements an ECS service which exposes a web service via ALB"
     url: "https://github.com/cloudposse/terraform-aws-ecs-alb-service-task"
-  - name: "erraform-aws-ecs-web-app"
+  - name: "terraform-aws-ecs-web-app"
     description: "Terraform module that implements a web app on ECS and supports autoscaling, CI/CD, monitoring, ALB integration, and much more"
     url: "https://github.com/cloudposse/terraform-aws-ecs-web-app"
   - name: "terraform-aws-ecs-codepipeline"
@@ -78,71 +78,62 @@ usage: |-
   For a complete example, see [examples/complete](examples/complete)
 
   ```hcl
-  provider "aws" {
-    region = "${var.region}"
-  }
+    provider "aws" {
+      region = var.region
+    }
 
-  locals {
-    # The usage of the specific kubernetes.io/cluster/* resource tags below are required
-    # for EKS and Kubernetes to discover and manage networking resources
-    # https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#base-vpc-networking
-    tags = "${merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))}"
-  }
+    locals {
+      # The usage of the specific kubernetes.io/cluster/* resource tags below are required
+      # for EKS and Kubernetes to discover and manage networking resources
+      # https://www.terraform.io/docs/providers/aws/guides/eks-getting-started.html#base-vpc-networking
+      tags = merge(var.tags, map("kubernetes.io/cluster/${var.cluster_name}", "shared"))
+    }
 
-  data "aws_availability_zones" "available" {}
+    module "vpc" {
+      source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.8.0"
+      namespace  = var.namespace
+      stage      = var.stage
+      name       = var.name
+      cidr_block = "172.16.0.0/16"
+      tags       = local.tags
+    }
 
-  module "vpc" {
-    source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=master"
-    namespace  = "${var.namespace}"
-    stage      = "${var.stage}"
-    name       = "${var.name}"
-    attributes = "${var.attributes}"
-    tags       = "${local.tags}"
-    cidr_block = "10.0.0.0/16"
-  }
+    module "subnets" {
+      source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.16.0"
+      availability_zones   = var.availability_zones
+      namespace            = var.namespace
+      stage                = var.stage
+      name                 = var.name
+      vpc_id               = module.vpc.vpc_id
+      igw_id               = module.vpc.igw_id
+      cidr_block           = module.vpc.vpc_cidr_block
+      nat_gateway_enabled  = false
+      nat_instance_enabled = false
+      tags                 = local.tags
+    }
 
-  module "subnets" {
-    source              = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=master"
-    availability_zones  = ["${data.aws_availability_zones.available.names}"]
-    namespace           = "${var.namespace}"
-    stage               = "${var.stage}"
-    name                = "${var.name}"
-    attributes          = "${var.attributes}"
-    tags                = "${local.tags}"
-    region              = "${var.region}"
-    vpc_id              = "${module.vpc.vpc_id}"
-    igw_id              = "${module.vpc.igw_id}"
-    cidr_block          = "${module.vpc.vpc_cidr_block}"
-    nat_gateway_enabled = "true"
-  }
+    module "eks_workers" {
+      source                             = "git::https://github.com/cloudposse/terraform-aws-eks-workers.git?ref=master"
+      namespace                          = var.namespace
+      stage                              = var.stage
+      name                               = var.name
+      instance_type                      = var.instance_type
+      vpc_id                             = module.vpc.vpc_id
+      subnet_ids                         = module.subnets.public_subnet_ids
+      health_check_type                  = var.health_check_type
+      min_size                           = var.min_size
+      max_size                           = var.max_size
+      wait_for_capacity_timeout          = var.wait_for_capacity_timeout
+      cluster_name                       = var.cluster_name
+      cluster_endpoint                   = var.cluster_endpoint
+      cluster_certificate_authority_data = var.cluster_certificate_authority_data
+      cluster_security_group_id          = var.cluster_security_group_id
 
-  module "eks_workers" {
-    source                             = "git::https://github.com/cloudposse/terraform-aws-eks-workers.git?ref=master"
-    namespace                          = "${var.namespace}"
-    stage                              = "${var.stage}"
-    name                               = "${var.name}"
-    attributes                         = "${var.attributes}"
-    tags                               = "${var.tags}"
-    image_id                           = "${var.image_id}"
-    eks_worker_ami_name_filter         = "${var.eks_worker_ami_name_filter}"
-    instance_type                      = "${var.instance_type}"
-    vpc_id                             = "${module.vpc.vpc_id}"
-    subnet_ids                         = ["${module.subnets.public_subnet_ids}"]
-    health_check_type                  = "${var.health_check_type}"
-    min_size                           = "${var.min_size}"
-    max_size                           = "${var.max_size}"
-    wait_for_capacity_timeout          = "${var.wait_for_capacity_timeout}"
-    associate_public_ip_address        = "${var.associate_public_ip_address}"
-    cluster_name                       = "${var.cluster_name}"
-    cluster_endpoint                   = "${var.cluster_endpoint}"
-    cluster_certificate_authority_data = "${var.cluster_certificate_authority_data}"
-    cluster_security_group_id          = "${var.cluster_security_group_id}"
-
-    # Auto-scaling policies and CloudWatch metric alarms
-    autoscaling_policies_enabled           = "${var.autoscaling_policies_enabled}"
-    cpu_utilization_high_threshold_percent = "${var.cpu_utilization_high_threshold_percent}"
-    cpu_utilization_low_threshold_percent  = "${var.cpu_utilization_low_threshold_percent}"
-  }
+      # Auto-scaling policies and CloudWatch metric alarms
+      autoscaling_policies_enabled           = var.autoscaling_policies_enabled
+      cpu_utilization_high_threshold_percent = var.cpu_utilization_high_threshold_percent
+      cpu_utilization_low_threshold_percent  = var.cpu_utilization_low_threshold_percent
+    }
   ```
 
 include:
