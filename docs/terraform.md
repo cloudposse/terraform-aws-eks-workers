@@ -72,7 +72,7 @@
 | use_existing_security_group | If set to `true`, will use variable `workers_security_group_id` to run EKS workers using an existing security group that was created outside of this module, workaround for errors like `count cannot be computed` | bool | `false` | no |
 | vpc_id | VPC ID for the EKS cluster | string | - | yes |
 | wait_for_capacity_timeout | A maximum duration that Terraform should wait for ASG instances to be healthy before timing out. Setting this to '0' causes Terraform to skip all Capacity Waiting behavior | string | `10m` | no |
-| wait_for_elb_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances in all attached load balancers on both create and update operations. Takes precedence over `min_elb_capacity` behavior | bool | `false` | no |
+| wait_for_elb_capacity | Setting this will cause Terraform to wait for exactly this number of healthy instances in all attached load balancers on both create and update operations. Takes precedence over `min_elb_capacity` behavior | number | `0` | no |
 | workers_role_policy_arns | List of policy ARNs that will be attached to the workers default role on creation | list(string) | `<list>` | no |
 | workers_role_policy_arns_count | Count of policy ARNs that will be attached to the workers default role on creation. Needed to prevent Terraform error `count can't be computed` | number | `0` | no |
 | workers_security_group_id | The name of the existing security group that will be used in autoscaling group for EKS workers. If empty, a new security group will be created | string | `` | no |
