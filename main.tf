@@ -36,6 +36,7 @@ resource "aws_iam_role" "default" {
   count              = var.enabled && var.use_existing_aws_iam_instance_profile == false ? 1 : 0
   name               = module.label.id
   assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
+  tags               = module.label.tags
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
@@ -154,6 +155,7 @@ module "autoscale_group" {
   name       = var.name
   delimiter  = var.delimiter
   attributes = var.attributes
+  tags       = module.label.tags
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
@@ -168,7 +170,6 @@ module "autoscale_group" {
   )
 
   user_data_base64 = base64encode(join("", data.template_file.userdata.*.rendered))
-  tags             = module.label.tags
 
   instance_type                           = var.instance_type
   subnet_ids                              = var.subnet_ids
