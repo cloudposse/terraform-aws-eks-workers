@@ -103,7 +103,7 @@ resource "aws_security_group_rule" "ingress_self" {
 }
 
 resource "aws_security_group_rule" "ingress_cluster" {
-  count                    = var.enabled && var.cluster_security_group_id != "" && var.use_existing_security_group == false ? 1 : 0
+  count                    = var.enabled && var.cluster_security_group_ingress_enabled && var.use_existing_security_group == false ? 1 : 0
   description              = "Allow worker kubelets and pods to receive communication from the cluster control plane"
   from_port                = 0
   to_port                  = 65535
