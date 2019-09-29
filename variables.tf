@@ -374,7 +374,19 @@ variable "cpu_utilization_low_statistic" {
 variable "bootstrap_extra_args" {
   type        = string
   default     = ""
-  description = "Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods."
+  description = "Passed to the `bootstrap.sh` script to enable `--kublet-extra-args` or `--use-max-pods`"
+}
+
+variable "before_cluster_joining_userdata" {
+  type        = string
+  default     = ""
+  description = "Additional commands to execute on each worker node before joining the EKS cluster (before executing the `bootstrap.sh` script). For mot info, see https://kubedex.com/90-days-of-aws-eks-in-production"
+}
+
+variable "after_cluster_joining_userdata" {
+  type        = string
+  default     = ""
+  description = "Additional commands to execute on each worker node after joining the EKS cluster (after executing the `bootstrap.sh` script). For mot info, see https://kubedex.com/90-days-of-aws-eks-in-production"
 }
 
 variable "aws_iam_instance_profile_name" {

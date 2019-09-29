@@ -140,14 +140,16 @@ Available targets:
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | additional_security_group_ids | Additional list of security groups that will be attached to the autoscaling group | list(string) | `<list>` | no |
+| after_cluster_joining_userdata | Additional commands to execute on each worker node after joining the EKS cluster (after executing the `bootstrap.sh` script). For mot info, see https://kubedex.com/90-days-of-aws-eks-in-production | string | `` | no |
 | allowed_cidr_blocks | List of CIDR blocks to be allowed to connect to the worker nodes | list(string) | `<list>` | no |
 | allowed_security_groups | List of Security Group IDs to be allowed to connect to the worker nodes | list(string) | `<list>` | no |
 | associate_public_ip_address | Associate a public IP address with an instance in a VPC | bool | `false` | no |
 | attributes | Additional attributes (e.g. `1`) | list(string) | `<list>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | bool | `true` | no |
 | aws_iam_instance_profile_name | The name of the existing instance profile that will be used in autoscaling group for EKS workers. If empty will create a new instance profile. | string | `` | no |
+| before_cluster_joining_userdata | Additional commands to execute on each worker node before joining the EKS cluster (before executing the `bootstrap.sh` script). For mot info, see https://kubedex.com/90-days-of-aws-eks-in-production | string | `` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | object | `<list>` | no |
-| bootstrap_extra_args | Passed to the bootstrap.sh script to enable --kublet-extra-args or --use-max-pods. | string | `` | no |
+| bootstrap_extra_args | Passed to the `bootstrap.sh` script to enable `--kublet-extra-args` or `--use-max-pods` | string | `` | no |
 | cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
 | cluster_endpoint | EKS cluster endpoint | string | - | yes |
 | cluster_name | The name of the EKS cluster | string | - | yes |

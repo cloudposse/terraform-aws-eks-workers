@@ -154,10 +154,12 @@ data "template_file" "userdata" {
   template = file("${path.module}/userdata.tpl")
 
   vars = {
-    cluster_endpoint           = var.cluster_endpoint
-    certificate_authority_data = var.cluster_certificate_authority_data
-    cluster_name               = var.cluster_name
-    bootstrap_extra_args       = var.bootstrap_extra_args
+    cluster_endpoint                = var.cluster_endpoint
+    certificate_authority_data      = var.cluster_certificate_authority_data
+    cluster_name                    = var.cluster_name
+    bootstrap_extra_args            = var.bootstrap_extra_args
+    before_cluster_joining_userdata = var.before_cluster_joining_userdata
+    after_cluster_joining_userdata  = var.after_cluster_joining_userdata
   }
 }
 
