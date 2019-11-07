@@ -49,6 +49,7 @@ module "eks_workers" {
   cluster_certificate_authority_data     = var.cluster_certificate_authority_data
   cluster_security_group_id              = var.cluster_security_group_id
   cluster_security_group_ingress_enabled = var.cluster_security_group_ingress_enabled
+  bootstrap_extra_args                   = "--node-labels=purpose=ci-worker"
 
   # Auto-scaling policies and CloudWatch metric alarms
   autoscaling_policies_enabled           = var.autoscaling_policies_enabled
