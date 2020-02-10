@@ -425,4 +425,3 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [share_googleplus]: https://plus.google.com/share?url=https://github.com/cloudposse/terraform-aws-eks-workers
   [share_email]: mailto:?subject=terraform-aws-eks-workers&body=https://github.com/cloudposse/terraform-aws-eks-workers
   [beacon]: https://ga-beacon.cloudposse.com/UA-76589703-4/cloudposse/terraform-aws-eks-workers?pixel&cs=github&cm=readme&an=terraform-aws-eks-workers
-  
