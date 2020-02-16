@@ -223,7 +223,6 @@ Available targets:
 | key_name | SSH key name that should be used for the instance | string | `` | no |
 | load_balancers | A list of elastic load balancer names to add to the autoscaling group. Only valid for classic load balancers. For ALBs, use `target_group_arns` instead | list(string) | `<list>` | no |
 | max_size | The maximum size of the autoscale group | number | - | yes |
-| mixed_instances_policy | Policy to use mixed group of on demand/spot of differing types | object | `null` | no |
 | metrics_granularity | The granularity to associate with the metrics to collect. The only valid value is 1Minute | string | `1Minute` | no |
 | min_elb_capacity | Setting this causes Terraform to wait for this number of instances to show up healthy in the ELB only on creation. Updates will not wait on ELB instance number changes | number | `0` | no |
 | min_size | The minimum size of the autoscale group | number | - | yes |
