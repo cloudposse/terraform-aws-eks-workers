@@ -169,7 +169,7 @@ data "aws_iam_instance_profile" "default" {
 }
 
 module "autoscale_group" {
-  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.2.1"
+  source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.4.0"
 
   enabled    = var.enabled
   namespace  = var.namespace
@@ -205,6 +205,7 @@ module "autoscale_group" {
   elastic_gpu_specifications              = var.elastic_gpu_specifications
   instance_initiated_shutdown_behavior    = var.instance_initiated_shutdown_behavior
   instance_market_options                 = var.instance_market_options
+  mixed_instances_policy                  = var.mixed_instances_policy
   key_name                                = var.key_name
   placement                               = var.placement
   enable_monitoring                       = var.enable_monitoring
