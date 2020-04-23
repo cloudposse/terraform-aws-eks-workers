@@ -113,12 +113,13 @@ For a complete example, see [examples/complete](examples/complete)
   }
 
   module "vpc" {
-    source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.8.0"
-    namespace  = var.namespace
-    stage      = var.stage
-    name       = var.name
-    cidr_block = "172.16.0.0/16"
-    tags       = local.tags
+    source      = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.8.0"
+    namespace   = var.namespace
+    stage       = var.stage
+    environment = var.environment
+    name        = var.name
+    cidr_block  = "172.16.0.0/16"
+    tags        = local.tags
   }
 
   module "subnets" {
@@ -126,6 +127,7 @@ For a complete example, see [examples/complete](examples/complete)
     availability_zones   = var.availability_zones
     namespace            = var.namespace
     stage                = var.stage
+    environment          = var.environment
     name                 = var.name
     vpc_id               = module.vpc.vpc_id
     igw_id               = module.vpc.igw_id
@@ -139,6 +141,7 @@ For a complete example, see [examples/complete](examples/complete)
     source                             = "git::https://github.com/cloudposse/terraform-aws-eks-workers.git?ref=master"
     namespace                          = var.namespace
     stage                              = var.stage
+    environment                        = var.environment
     name                               = var.name
     instance_type                      = var.instance_type
     vpc_id                             = module.vpc.vpc_id
@@ -204,7 +207,7 @@ Available targets:
 | cpu_utilization_low_threshold_percent | The value against which the specified statistic is compared | number | `10` | no |
 | credit_specification | Customize the credit specification of the instances | object | `null` | no |
 | default_cooldown | The amount of time, in seconds, after a scaling activity completes before another scaling activity can start | number | `300` | no |
-| delimiter | Delimiter to be used between `namespace`, `stage`, `name` and `attributes` | string | `-` | no |
+| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | string | `-` | no |
 | disable_api_termination | If `true`, enables EC2 Instance Termination Protection | bool | `false` | no |
 | ebs_optimized | If true, the launched EC2 instance will be EBS-optimized | bool | `false` | no |
 | eks_worker_ami_name_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | string | `amazon-eks-node-*` | no |
@@ -213,6 +216,7 @@ Available targets:
 | enable_monitoring | Enable/disable detailed monitoring | bool | `true` | no |
 | enabled | Whether to create the resources. Set to `false` to prevent the module from creating any resources | bool | `true` | no |
 | enabled_metrics | A list of metrics to collect. The allowed values are `GroupMinSize`, `GroupMaxSize`, `GroupDesiredCapacity`, `GroupInServiceInstances`, `GroupPendingInstances`, `GroupStandbyInstances`, `GroupTerminatingInstances`, `GroupTotalInstances` | list(string) | `<list>` | no |
+| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | string | `` | no |
 | force_delete | Allows deleting the autoscaling group without waiting for all instances in the pool to terminate. You can force an autoscaling group to delete even if it's in the process of scaling a resource. Normally, Terraform drains all the instances before deleting the group. This bypasses that behavior and potentially leaves resources dangling | bool | `false` | no |
 | health_check_grace_period | Time (in seconds) after instance comes into service before checking health | number | `300` | no |
 | health_check_type | Controls how health checking is done. Valid values are `EC2` or `ELB` | string | `EC2` | no |
@@ -241,7 +245,7 @@ Available targets:
 | scale_up_policy_type | The scalling policy type, either `SimpleScaling`, `StepScaling` or `TargetTrackingScaling` | string | `SimpleScaling` | no |
 | scale_up_scaling_adjustment | The number of instances by which to scale. `scale_up_adjustment_type` determines the interpretation of this number (e.g. as an absolute number or as a percentage of the existing Auto Scaling group size). A positive increment adds to the current capacity and a negative value removes from the current capacity | number | `1` | no |
 | service_linked_role_arn | The ARN of the service-linked role that the ASG will use to call other AWS services | string | `` | no |
-| stage | Stage, e.g. 'prod', 'staging', 'dev', or 'test' | string | `` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | string | `` | no |
 | subnet_ids | A list of subnet IDs to launch resources in | list(string) | - | yes |
 | suspended_processes | A list of processes to suspend for the AutoScaling Group. The allowed values are `Launch`, `Terminate`, `HealthCheck`, `ReplaceUnhealthy`, `AZRebalance`, `AlarmNotification`, `ScheduledActions`, `AddToLoadBalancer`. Note that if you suspend either the `Launch` or `Terminate` process types, it can prevent your autoscaling group from functioning properly. | list(string) | `<list>` | no |
 | tags | Additional tags (e.g. `{ BusinessUnit = "XYZ" }` | map(string) | `<map>` | no |
@@ -337,6 +341,10 @@ We deliver 10x the value for a fraction of the cost of a full-time engineer. Our
 ## Slack Community
 
 Join our [Open Source Community][slack] on Slack. It's **FREE** for everyone! Our "SweetOps" community is where you get to talk with others who share a similar vision for how to rollout and manage infrastructure. This is the best place to talk shop, ask questions, solicit feedback, and work together as a community to build totally *sweet* infrastructure.
+
+## Discourse Forums
+
+Participate in our [Discourse Forums][discourse]. Here you'll find answers to commonly asked questions. Most questions will be related to the enormous number of projects we support on our GitHub. Come here to collaborate on answers, find solutions, and get ideas about the products and services we value. It only takes a minute to get started! Just sign in with SSO using your GitHub account.
 
 ## Newsletter
 
@@ -451,6 +459,7 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [testimonial]: https://cpco.io/leave-testimonial?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=testimonial
   [office_hours]: https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=office_hours
   [newsletter]: https://cpco.io/newsletter?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=newsletter
+  [discourse]: https://ask.sweetops.com/?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=discourse
   [email]: https://cpco.io/email?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=email
   [commercial_support]: https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=commercial_support
   [we_love_open_source]: https://cpco.io/we-love-open-source?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=we_love_open_source

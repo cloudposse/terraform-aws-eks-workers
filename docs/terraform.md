@@ -28,7 +28,7 @@
 | cpu_utilization_low_threshold_percent | The value against which the specified statistic is compared | number | `10` | no |
 | credit_specification | Customize the credit specification of the instances | object | `null` | no |
 | default_cooldown | The amount of time, in seconds, after a scaling activity completes before another scaling activity can start | number | `300` | no |
-| delimiter | Delimiter to be used between `namespace`, `stage`, `name` and `attributes` | string | `-` | no |
+| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | string | `-` | no |
 | disable_api_termination | If `true`, enables EC2 Instance Termination Protection | bool | `false` | no |
 | ebs_optimized | If true, the launched EC2 instance will be EBS-optimized | bool | `false` | no |
 | eks_worker_ami_name_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | string | `amazon-eks-node-*` | no |
@@ -37,6 +37,7 @@
 | enable_monitoring | Enable/disable detailed monitoring | bool | `true` | no |
 | enabled | Whether to create the resources. Set to `false` to prevent the module from creating any resources | bool | `true` | no |
 | enabled_metrics | A list of metrics to collect. The allowed values are `GroupMinSize`, `GroupMaxSize`, `GroupDesiredCapacity`, `GroupInServiceInstances`, `GroupPendingInstances`, `GroupStandbyInstances`, `GroupTerminatingInstances`, `GroupTotalInstances` | list(string) | `<list>` | no |
+| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | string | `` | no |
 | force_delete | Allows deleting the autoscaling group without waiting for all instances in the pool to terminate. You can force an autoscaling group to delete even if it's in the process of scaling a resource. Normally, Terraform drains all the instances before deleting the group. This bypasses that behavior and potentially leaves resources dangling | bool | `false` | no |
 | health_check_grace_period | Time (in seconds) after instance comes into service before checking health | number | `300` | no |
 | health_check_type | Controls how health checking is done. Valid values are `EC2` or `ELB` | string | `EC2` | no |
@@ -65,7 +66,7 @@
 | scale_up_policy_type | The scalling policy type, either `SimpleScaling`, `StepScaling` or `TargetTrackingScaling` | string | `SimpleScaling` | no |
 | scale_up_scaling_adjustment | The number of instances by which to scale. `scale_up_adjustment_type` determines the interpretation of this number (e.g. as an absolute number or as a percentage of the existing Auto Scaling group size). A positive increment adds to the current capacity and a negative value removes from the current capacity | number | `1` | no |
 | service_linked_role_arn | The ARN of the service-linked role that the ASG will use to call other AWS services | string | `` | no |
-| stage | Stage, e.g. 'prod', 'staging', 'dev', or 'test' | string | `` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | string | `` | no |
 | subnet_ids | A list of subnet IDs to launch resources in | list(string) | - | yes |
 | suspended_processes | A list of processes to suspend for the AutoScaling Group. The allowed values are `Launch`, `Terminate`, `HealthCheck`, `ReplaceUnhealthy`, `AZRebalance`, `AlarmNotification`, `ScheduledActions`, `AddToLoadBalancer`. Note that if you suspend either the `Launch` or `Terminate` process types, it can prevent your autoscaling group from functioning properly. | list(string) | `<list>` | no |
 | tags | Additional tags (e.g. `{ BusinessUnit = "XYZ" }` | map(string) | `<map>` | no |

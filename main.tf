@@ -11,14 +11,15 @@ locals {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.name
-  delimiter  = var.delimiter
-  attributes = compact(concat(var.attributes, ["workers"]))
-  tags       = local.tags
-  enabled    = var.enabled
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref = tags/0.16.0"
+  namespace   = var.namespace
+  stage       = var.stage
+  environment = var.environment
+  name        = var.name
+  delimiter   = var.delimiter
+  attributes  = compact(concat(var.attributes, ["workers"]))
+  tags        = local.tags
+  enabled     = var.enabled
 }
 
 data "aws_iam_policy_document" "assume_role" {
@@ -171,13 +172,14 @@ data "aws_iam_instance_profile" "default" {
 module "autoscale_group" {
   source = "git::https://github.com/cloudposse/terraform-aws-ec2-autoscale-group.git?ref=tags/0.4.0"
 
-  enabled    = var.enabled
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.name
-  delimiter  = var.delimiter
-  attributes = var.attributes
-  tags       = module.label.tags
+  enabled     = var.enabled
+  namespace   = var.namespace
+  stage       = var.stage
+  environment = var.environment
+  name        = var.name
+  delimiter   = var.delimiter
+  attributes  = var.attributes
+  tags        = module.label.tags
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
