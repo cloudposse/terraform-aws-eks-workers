@@ -7,8 +7,8 @@
 
 ${before_cluster_joining_userdata}
 
-export KUBELET_EXTRA_ARGS=${bootstrap_extra_args}
+export KUBELET_EXTRA_ARGS="${kubelet_extra_args}"
 
-/etc/eks/bootstrap.sh --apiserver-endpoint '${cluster_endpoint}' --b64-cluster-ca '${certificate_authority_data}' '${cluster_name}'
+/etc/eks/bootstrap.sh --apiserver-endpoint '${cluster_endpoint}' --b64-cluster-ca '${certificate_authority_data}' ${bootstrap_extra_args} '${cluster_name}'
 
 ${after_cluster_joining_userdata}

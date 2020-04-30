@@ -184,11 +184,12 @@ Available targets:
 | allowed_security_groups | List of Security Group IDs to be allowed to connect to the worker nodes | list(string) | `<list>` | no |
 | associate_public_ip_address | Associate a public IP address with an instance in a VPC | bool | `false` | no |
 | attributes | Additional attributes (e.g. `1`) | list(string) | `<list>` | no |
+| autoscaling_group_tags | Additional tags only for the autoscaling group, e.g. "k8s.io/cluster-autoscaler/node-template/taint/dedicated" = "ci-cd:NoSchedule". | map(string) | `<map>` | no |
 | autoscaling_policies_enabled | Whether to create `aws_autoscaling_policy` and `aws_cloudwatch_metric_alarm` resources to control Auto Scaling | bool | `true` | no |
 | aws_iam_instance_profile_name | The name of the existing instance profile that will be used in autoscaling group for EKS workers. If empty will create a new instance profile. | string | `` | no |
 | before_cluster_joining_userdata | Additional commands to execute on each worker node before joining the EKS cluster (before executing the `bootstrap.sh` script). For mot info, see https://kubedex.com/90-days-of-aws-eks-in-production | string | `` | no |
 | block_device_mappings | Specify volumes to attach to the instance besides the volumes specified by the AMI | object | `<list>` | no |
-| bootstrap_extra_args | Passed to the `bootstrap.sh` script to enable `--kublet-extra-args` or `--use-max-pods` | string | `` | no |
+| bootstrap_extra_args | Extra arguments to the `bootstrap.sh` script to enable `--enable-docker-bridge` or `--use-max-pods` | string | `` | no |
 | cluster_certificate_authority_data | The base64 encoded certificate data required to communicate with the cluster | string | - | yes |
 | cluster_endpoint | EKS cluster endpoint | string | - | yes |
 | cluster_name | The name of the EKS cluster | string | - | yes |
@@ -221,6 +222,7 @@ Available targets:
 | instance_market_options | The market (purchasing) option for the instances | object | `null` | no |
 | instance_type | Instance type to launch | string | - | yes |
 | key_name | SSH key name that should be used for the instance | string | `` | no |
+| kubelet_extra_args | Extra arguments to pass to kubelet, like "--register-with-taints=dedicated=ci-cd:NoSchedule --node-labels=purpose=ci-worker" | string | `` | no |
 | load_balancers | A list of elastic load balancer names to add to the autoscaling group. Only valid for classic load balancers. For ALBs, use `target_group_arns` instead | list(string) | `<list>` | no |
 | max_size | The maximum size of the autoscale group | number | - | yes |
 | metrics_granularity | The granularity to associate with the metrics to collect. The only valid value is 1Minute | string | `1Minute` | no |
@@ -338,6 +340,10 @@ We deliver 10x the value for a fraction of the cost of a full-time engineer. Our
 
 Join our [Open Source Community][slack] on Slack. It's **FREE** for everyone! Our "SweetOps" community is where you get to talk with others who share a similar vision for how to rollout and manage infrastructure. This is the best place to talk shop, ask questions, solicit feedback, and work together as a community to build totally *sweet* infrastructure.
 
+## Discourse Forums
+
+Participate in our [Discourse Forums][discourse]. Here you'll find answers to commonly asked questions. Most questions will be related to the enormous number of projects we support on our GitHub. Come here to collaborate on answers, find solutions, and get ideas about the products and services we value. It only takes a minute to get started! Just sign in with SSO using your GitHub account.
+
 ## Newsletter
 
 Sign up for [our newsletter][newsletter] that covers everything on our technology radar.  Receive updates on what we're up to on GitHub as well as awesome new projects we discover. 
@@ -451,6 +457,7 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [testimonial]: https://cpco.io/leave-testimonial?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=testimonial
   [office_hours]: https://cloudposse.com/office-hours?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=office_hours
   [newsletter]: https://cpco.io/newsletter?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=newsletter
+  [discourse]: https://ask.sweetops.com/?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=discourse
   [email]: https://cpco.io/email?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=email
   [commercial_support]: https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=commercial_support
   [we_love_open_source]: https://cpco.io/we-love-open-source?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-eks-workers&utm_content=we_love_open_source

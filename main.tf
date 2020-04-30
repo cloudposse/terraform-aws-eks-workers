@@ -158,6 +158,7 @@ data "template_file" "userdata" {
     certificate_authority_data      = var.cluster_certificate_authority_data
     cluster_name                    = var.cluster_name
     bootstrap_extra_args            = var.bootstrap_extra_args
+    kubelet_extra_args              = var.kubelet_extra_args
     before_cluster_joining_userdata = var.before_cluster_joining_userdata
     after_cluster_joining_userdata  = var.after_cluster_joining_userdata
   }
@@ -177,7 +178,7 @@ module "autoscale_group" {
   name       = var.name
   delimiter  = var.delimiter
   attributes = var.attributes
-  tags       = module.label.tags
+  tags       = merge(module.label.tags, var.autoscaling_group_tags)
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
