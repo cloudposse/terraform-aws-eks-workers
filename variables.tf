@@ -269,6 +269,12 @@ variable "service_linked_role_arn" {
   default     = ""
 }
 
+variable "autoscaling_group_tags" {
+  type        = map(string)
+  default     = {}
+  description = "Additional tags only for the autoscaling group, e.g. \"k8s.io/cluster-autoscaler/node-template/taint/dedicated\" = \"ci-cd:NoSchedule\"."
+}
+
 variable "autoscaling_policies_enabled" {
   type        = bool
   default     = true
@@ -374,8 +380,15 @@ variable "cpu_utilization_low_statistic" {
 variable "bootstrap_extra_args" {
   type        = string
   default     = ""
-  description = "Passed to the `bootstrap.sh` script to enable `--kublet-extra-args` or `--use-max-pods`"
+  description = "Extra arguments to the `bootstrap.sh` script to enable `--enable-docker-bridge` or `--use-max-pods`"
 }
+
+variable "kubelet_extra_args" {
+  type        = string
+  default     = ""
+  description = "Extra arguments to pass to kubelet, like \"--register-with-taints=dedicated=ci-cd:NoSchedule --node-labels=purpose=ci-worker\""
+}
+
 
 variable "before_cluster_joining_userdata" {
   type        = string
