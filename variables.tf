@@ -6,8 +6,14 @@ variable "namespace" {
 
 variable "stage" {
   type        = string
-  description = "Stage, e.g. 'prod', 'staging', 'dev', or 'test'"
   default     = ""
+  description = "Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release'"
+}
+
+variable "environment" {
+  type        = string
+  default     = ""
+  description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
 }
 
 variable "name" {
@@ -19,7 +25,7 @@ variable "name" {
 variable "delimiter" {
   type        = string
   default     = "-"
-  description = "Delimiter to be used between `namespace`, `stage`, `name` and `attributes`"
+  description = "Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`"
 }
 
 variable "attributes" {
