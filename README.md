@@ -1,4 +1,6 @@
+<!-- markdownlint-disable -->
 # terraform-aws-eks-workers [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-eks-workers.svg)](https://github.com/cloudposse/terraform-aws-eks-workers/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
+<!-- markdownlint-restore -->
 
 [![README Header][readme_header_img]][readme_header_link]
 
@@ -156,21 +158,22 @@ Available targets:
 
 ```
 <!-- markdownlint-restore -->
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12.0, < 0.14.0 |
-| aws | ~> 2.0 |
-| local | ~> 1.3 |
-| template | ~> 2.0 |
+| aws | >= 2.0 |
+| local | >= 1.3 |
+| template | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.0 |
-| template | ~> 2.0 |
+| aws | >= 2.0 |
+| template | >= 2.0 |
 
 ## Inputs
 
@@ -278,6 +281,7 @@ Available targets:
 | workers\_role\_arn | ARN of the worker nodes IAM role |
 | workers\_role\_name | Name of the worker nodes IAM role |
 
+<!-- markdownlint-restore -->
 
 
 
@@ -432,8 +436,10 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 
 ### Contributors
 
+<!-- markdownlint-disable -->
 |  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Igor Rodionov][goruha_avatar]][goruha_homepage]<br/>[Igor Rodionov][goruha_homepage] |
 |---|---|---|
+<!-- markdownlint-restore -->
 
   [osterman_homepage]: https://github.com/osterman
   [osterman_avatar]: https://img.cloudposse.com/150x150/https://github.com/osterman.png
