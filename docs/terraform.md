@@ -1,24 +1,26 @@
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.0, < 0.14.0 |
-| aws | ~> 2.0 |
-| local | ~> 1.3 |
-| template | ~> 2.0 |
+| terraform | >= 0.12.26 |
+| aws | >= 2.0 |
+| local | >= 1.3 |
+| template | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.0 |
-| template | ~> 2.0 |
+| aws | >= 2.0 |
+| template | >= 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | additional\_security\_group\_ids | Additional list of security groups that will be attached to the autoscaling group | `list(string)` | `[]` | no |
+| additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
 | after\_cluster\_joining\_userdata | Additional commands to execute on each worker node after joining the EKS cluster (after executing the `bootstrap.sh` script). For mot info, see https://kubedex.com/90-days-of-aws-eks-in-production | `string` | `""` | no |
 | allowed\_cidr\_blocks | List of CIDR blocks to be allowed to connect to the worker nodes | `list(string)` | `[]` | no |
 | allowed\_security\_groups | List of Security Group IDs to be allowed to connect to the worker nodes | `list(string)` | `[]` | no |
@@ -35,6 +37,7 @@
 | cluster\_name | The name of the EKS cluster | `string` | n/a | yes |
 | cluster\_security\_group\_id | Security Group ID of the EKS cluster | `string` | n/a | yes |
 | cluster\_security\_group\_ingress\_enabled | Whether to enable the EKS cluster Security Group as ingress to workers Security Group | `bool` | `true` | no |
+| context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | <pre>object({<br>    enabled             = bool<br>    namespace           = string<br>    environment         = string<br>    stage               = string<br>    name                = string<br>    delimiter           = string<br>    attributes          = list(string)<br>    tags                = map(string)<br>    additional_tag_map  = map(string)<br>    regex_replace_chars = string<br>    label_order         = list(string)<br>    id_length_limit     = number<br>  })</pre> | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_order": [],<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
 | cpu\_utilization\_high\_evaluation\_periods | The number of periods over which data is compared to the specified threshold | `number` | `2` | no |
 | cpu\_utilization\_high\_period\_seconds | The period in seconds over which the specified statistic is applied | `number` | `300` | no |
 | cpu\_utilization\_high\_statistic | The statistic to apply to the alarm's associated metric. Either of the following is supported: `SampleCount`, `Average`, `Sum`, `Minimum`, `Maximum` | `string` | `"Average"` | no |
@@ -45,35 +48,39 @@
 | cpu\_utilization\_low\_threshold\_percent | The value against which the specified statistic is compared | `number` | `10` | no |
 | credit\_specification | Customize the credit specification of the instances | <pre>object({<br>    cpu_credits = string<br>  })</pre> | `null` | no |
 | default\_cooldown | The amount of time, in seconds, after a scaling activity completes before another scaling activity can start | `number` | `300` | no |
-| delimiter | Delimiter to be used between `namespace`, `stage`, `name` and `attributes` | `string` | `"-"` | no |
+| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | disable\_api\_termination | If `true`, enables EC2 Instance Termination Protection | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance will be EBS-optimized | `bool` | `false` | no |
 | eks\_worker\_ami\_name\_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | `string` | `"amazon-eks-node-*"` | no |
 | eks\_worker\_ami\_name\_regex | A regex string to apply to the AMI list returned by AWS | `string` | `"^amazon-eks-node-[1-9,.]+-v[0-9]{8}$"` | no |
 | elastic\_gpu\_specifications | Specifications of Elastic GPU to attach to the instances | <pre>object({<br>    type = string<br>  })</pre> | `null` | no |
 | enable\_monitoring | Enable/disable detailed monitoring | `bool` | `true` | no |
-| enabled | Whether to create the resources. Set to `false` to prevent the module from creating any resources | `bool` | `true` | no |
+| enabled | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | enabled\_metrics | A list of metrics to collect. The allowed values are `GroupMinSize`, `GroupMaxSize`, `GroupDesiredCapacity`, `GroupInServiceInstances`, `GroupPendingInstances`, `GroupStandbyInstances`, `GroupTerminatingInstances`, `GroupTotalInstances` | `list(string)` | <pre>[<br>  "GroupMinSize",<br>  "GroupMaxSize",<br>  "GroupDesiredCapacity",<br>  "GroupInServiceInstances",<br>  "GroupPendingInstances",<br>  "GroupStandbyInstances",<br>  "GroupTerminatingInstances",<br>  "GroupTotalInstances"<br>]</pre> | no |
+| environment | Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | force\_delete | Allows deleting the autoscaling group without waiting for all instances in the pool to terminate. You can force an autoscaling group to delete even if it's in the process of scaling a resource. Normally, Terraform drains all the instances before deleting the group. This bypasses that behavior and potentially leaves resources dangling | `bool` | `false` | no |
 | health\_check\_grace\_period | Time (in seconds) after instance comes into service before checking health | `number` | `300` | no |
 | health\_check\_type | Controls how health checking is done. Valid values are `EC2` or `ELB` | `string` | `"EC2"` | no |
+| id\_length\_limit | Limit `id` to this many characters.<br>Set to `0` for unlimited length.<br>Set to `null` for default, which is `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
 | image\_id | EC2 image ID to launch. If not provided, the module will lookup the most recent EKS AMI. See https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html for more details on EKS-optimized images | `string` | `""` | no |
 | instance\_initiated\_shutdown\_behavior | Shutdown behavior for the instances. Can be `stop` or `terminate` | `string` | `"terminate"` | no |
 | instance\_market\_options | The market (purchasing) option for the instances | <pre>object({<br>    market_type = string<br>    spot_options = object({<br>      block_duration_minutes         = number<br>      instance_interruption_behavior = string<br>      max_price                      = number<br>      spot_instance_type             = string<br>      valid_until                    = string<br>    })<br>  })</pre> | `null` | no |
 | instance\_type | Instance type to launch | `string` | n/a | yes |
 | key\_name | SSH key name that should be used for the instance | `string` | `""` | no |
 | kubelet\_extra\_args | Extra arguments to pass to kubelet, like "--register-with-taints=dedicated=ci-cd:NoSchedule --node-labels=purpose=ci-worker" | `string` | `""` | no |
+| label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | load\_balancers | A list of elastic load balancer names to add to the autoscaling group. Only valid for classic load balancers. For ALBs, use `target_group_arns` instead | `list(string)` | `[]` | no |
 | max\_size | The maximum size of the autoscale group | `number` | n/a | yes |
 | metrics\_granularity | The granularity to associate with the metrics to collect. The only valid value is 1Minute | `string` | `"1Minute"` | no |
 | min\_elb\_capacity | Setting this causes Terraform to wait for this number of instances to show up healthy in the ELB only on creation. Updates will not wait on ELB instance number changes | `number` | `0` | no |
 | min\_size | The minimum size of the autoscale group | `number` | n/a | yes |
 | mixed\_instances\_policy | policy to used mixed group of on demand/spot of differing types. Launch template is automatically generated. https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html#mixed_instances_policy-1 | <pre>object({<br>    instances_distribution = object({<br>      on_demand_allocation_strategy            = string<br>      on_demand_base_capacity                  = number<br>      on_demand_percentage_above_base_capacity = number<br>      spot_allocation_strategy                 = string<br>      spot_instance_pools                      = number<br>      spot_max_price                           = string<br>    })<br>    override = list(object({<br>      instance_type     = string<br>      weighted_capacity = number<br>    }))<br>  })</pre> | `null` | no |
-| name | Solution name, e.g. 'app' or 'cluster' | `string` | `"app"` | no |
-| namespace | Namespace, which could be your organization name, e.g. 'eg' or 'cp' | `string` | `""` | no |
+| name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
+| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | placement | The placement specifications of the instances | <pre>object({<br>    affinity          = string<br>    availability_zone = string<br>    group_name        = string<br>    host_id           = string<br>    tenancy           = string<br>  })</pre> | `null` | no |
 | placement\_group | The name of the placement group into which you'll launch your instances, if any | `string` | `""` | no |
 | protect\_from\_scale\_in | Allows setting instance protection. The autoscaling group will not select instances with this setting for terminination during scale in events | `bool` | `false` | no |
+| regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | scale\_down\_adjustment\_type | Specifies whether the adjustment is an absolute number or a percentage of the current capacity. Valid values are `ChangeInCapacity`, `ExactCapacity` and `PercentChangeInCapacity` | `string` | `"ChangeInCapacity"` | no |
 | scale\_down\_cooldown\_seconds | The amount of time, in seconds, after a scaling activity completes and before the next scaling activity can start | `number` | `300` | no |
 | scale\_down\_policy\_type | The scalling policy type, either `SimpleScaling`, `StepScaling` or `TargetTrackingScaling` | `string` | `"SimpleScaling"` | no |
@@ -83,10 +90,10 @@
 | scale\_up\_policy\_type | The scalling policy type, either `SimpleScaling`, `StepScaling` or `TargetTrackingScaling` | `string` | `"SimpleScaling"` | no |
 | scale\_up\_scaling\_adjustment | The number of instances by which to scale. `scale_up_adjustment_type` determines the interpretation of this number (e.g. as an absolute number or as a percentage of the existing Auto Scaling group size). A positive increment adds to the current capacity and a negative value removes from the current capacity | `number` | `1` | no |
 | service\_linked\_role\_arn | The ARN of the service-linked role that the ASG will use to call other AWS services | `string` | `""` | no |
-| stage | Stage, e.g. 'prod', 'staging', 'dev', or 'test' | `string` | `""` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | subnet\_ids | A list of subnet IDs to launch resources in | `list(string)` | n/a | yes |
 | suspended\_processes | A list of processes to suspend for the AutoScaling Group. The allowed values are `Launch`, `Terminate`, `HealthCheck`, `ReplaceUnhealthy`, `AZRebalance`, `AlarmNotification`, `ScheduledActions`, `AddToLoadBalancer`. Note that if you suspend either the `Launch` or `Terminate` process types, it can prevent your autoscaling group from functioning properly. | `list(string)` | `[]` | no |
-| tags | Additional tags (e.g. `{ BusinessUnit = "XYZ" }` | `map(string)` | `{}` | no |
+| tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
 | target\_group\_arns | A list of aws\_alb\_target\_group ARNs, for use with Application Load Balancing | `list(string)` | `[]` | no |
 | termination\_policies | A list of policies to decide how the instances in the auto scale group should be terminated. The allowed values are `OldestInstance`, `NewestInstance`, `OldestLaunchConfiguration`, `ClosestToNextInstanceHour`, `Default` | `list(string)` | <pre>[<br>  "Default"<br>]</pre> | no |
 | use\_custom\_image\_id | If set to `true`, will use variable `image_id` for the EKS workers inside autoscaling group | `bool` | `false` | no |
@@ -120,3 +127,4 @@
 | workers\_role\_arn | ARN of the worker nodes IAM role |
 | workers\_role\_name | Name of the worker nodes IAM role |
 
+<!-- markdownlint-restore -->
