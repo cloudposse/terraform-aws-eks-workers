@@ -171,11 +171,11 @@ module "autoscale_group" {
   version = "0.7.2"
 
   enabled    = local.enabled
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.name
-  delimiter  = var.delimiter
-  attributes = var.attributes
+  namespace  = module.this.namespace
+  stage      = module.this.stage
+  name       = module.this.name
+  delimiter  = module.this.delimiter
+  attributes = module.this.attributes
   tags       = merge(module.label.tags, var.autoscaling_group_tags)
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
