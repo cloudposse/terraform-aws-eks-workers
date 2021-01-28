@@ -174,7 +174,6 @@ Available targets:
 |------|---------|
 | terraform | >= 0.12.26 |
 | aws | >= 2.0 |
-| local | >= 1.3 |
 | template | >= 2.0 |
 
 ## Providers

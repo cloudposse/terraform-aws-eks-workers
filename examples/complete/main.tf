@@ -11,7 +11,7 @@ locals {
 
 module "vpc" {
   source  = "cloudposse/vpc/aws"
-  version = "0.18.1"
+  version = "0.18.2"
 
   cidr_block = "172.16.0.0/16"
   tags       = local.tags
@@ -21,7 +21,7 @@ module "vpc" {
 
 module "subnets" {
   source  = "cloudposse/dynamic-subnets/aws"
-  version = "0.32.0"
+  version = "0.36.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id

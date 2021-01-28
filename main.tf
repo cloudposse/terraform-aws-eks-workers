@@ -168,15 +168,10 @@ data "aws_iam_instance_profile" "default" {
 
 module "autoscale_group" {
   source  = "cloudposse/ec2-autoscale-group/aws"
-  version = "0.7.2"
+  version = "0.12.0"
 
-  enabled    = local.enabled
-  namespace  = module.this.namespace
-  stage      = module.this.stage
-  name       = module.this.name
-  delimiter  = module.this.delimiter
-  attributes = module.this.attributes
-  tags       = merge(module.label.tags, var.autoscaling_group_tags)
+  enabled = local.enabled
+  tags    = var.autoscaling_group_tags
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
@@ -241,4 +236,6 @@ module "autoscale_group" {
   cpu_utilization_low_period_seconds      = var.cpu_utilization_low_period_seconds
   cpu_utilization_low_statistic           = var.cpu_utilization_low_statistic
   cpu_utilization_low_threshold_percent   = var.cpu_utilization_low_threshold_percent
+
+  context = module.this.context
 }
