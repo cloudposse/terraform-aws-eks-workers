@@ -172,9 +172,8 @@ Available targets:
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.26 |
+| terraform | >= 0.13 |
 | aws | >= 2.0 |
-| local | >= 1.3 |
 | template | >= 2.0 |
 
 ## Providers
