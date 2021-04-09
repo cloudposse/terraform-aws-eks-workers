@@ -51,6 +51,7 @@
 | disable\_api\_termination | If `true`, enables EC2 Instance Termination Protection | `bool` | `false` | no |
 | ebs\_optimized | If true, the launched EC2 instance will be EBS-optimized | `bool` | `false` | no |
 | eks\_worker\_ami\_name\_filter | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | `string` | `"amazon-eks-node-*"` | no |
+| eks\_worker\_ami\arch\_filter | AMI architecture filter to select required image architecture if `image_id` is not provided. | `string` | `"x86_64"` | no |
 | eks\_worker\_ami\_name\_regex | A regex string to apply to the AMI list returned by AWS | `string` | `"^amazon-eks-node-[1-9,.]+-v[0-9]{8}$"` | no |
 | elastic\_gpu\_specifications | Specifications of Elastic GPU to attach to the instances | <pre>object({<br>    type = string<br>  })</pre> | `null` | no |
 | enable\_monitoring | Enable/disable detailed monitoring | `bool` | `true` | no |

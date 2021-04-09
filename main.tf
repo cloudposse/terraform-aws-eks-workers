@@ -143,6 +143,11 @@ data "aws_ami" "eks_worker" {
     values = [var.eks_worker_ami_name_filter]
   }
 
+  filter {
+    name   = "architecture"
+    values = [var.eks_worker_ami_arch_filter]
+  }
+
   owners = ["602401143452"] # Amazon
 }
 

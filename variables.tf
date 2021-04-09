@@ -65,6 +65,12 @@ variable "eks_worker_ami_name_filter" {
   default     = "amazon-eks-node-*"
 }
 
+variable "eks_worker_ami_arch_filter" {
+  type        = string
+  description = "AMI architecture filter to select required image architecture if `image_id` is not provided. Possible options: x86_64, arm46, i386"
+  default     = "x86_64"
+}
+
 variable "eks_worker_ami_name_regex" {
   type        = string
   description = "A regex string to apply to the AMI list returned by AWS"
