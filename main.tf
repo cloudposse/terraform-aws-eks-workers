@@ -171,7 +171,7 @@ module "autoscale_group" {
   version = "0.22.0"
 
   enabled = local.enabled
-  tags    = var.autoscaling_group_tags
+  tags    = merge(module.label.tags, var.autoscaling_group_tags)
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
