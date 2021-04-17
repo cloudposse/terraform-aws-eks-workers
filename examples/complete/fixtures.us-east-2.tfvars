@@ -6,7 +6,7 @@ namespace = "eg"
 
 stage = "test"
 
-name = "eks-workers"
+name = "suite"
 
 instance_type = "t2.small"
 

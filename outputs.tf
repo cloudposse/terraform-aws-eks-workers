@@ -18,6 +18,11 @@ output "autoscaling_group_name" {
   value       = module.autoscale_group.autoscaling_group_name
 }
 
+output "autoscaling_group_tags" {
+  description = "A list of tag settings associated with the AutoScaling Group"
+  value       = module.autoscale_group.autoscaling_group_tags
+}
+
 output "autoscaling_group_arn" {
   description = "ARN of the AutoScaling Group"
   value       = module.autoscale_group.autoscaling_group_arn
