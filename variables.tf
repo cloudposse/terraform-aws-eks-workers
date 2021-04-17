@@ -41,6 +41,27 @@ variable "allowed_cidr_blocks" {
   description = "List of CIDR blocks to be allowed to connect to the worker nodes"
 }
 
+variable "metadata_http_endpoint_enabled" {
+  type        = bool
+  default     = true
+  description = "Set false to disable the Instance Metadata Service."
+}
+
+variable "metadata_http_put_response_hop_limit" {
+  type        = number
+  default     = 2
+  description = <<-EOT
+    The desired HTTP PUT response hop limit (between 1 and 64) for Instance Metadata Service requests.
+    The default is `2` to support containerized workloads.
+    EOT
+}
+
+variable "metadata_http_tokens_required" {
+  type        = bool
+  default     = true
+  description = "Set true to require IMDS session tokens, disabling Instance Metadata Service Version 1."
+}
+
 variable "instance_initiated_shutdown_behavior" {
   type        = string
   description = "Shutdown behavior for the instances. Can be `stop` or `terminate`"

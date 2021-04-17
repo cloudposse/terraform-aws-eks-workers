@@ -12,7 +12,7 @@ module "label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
 
-  attributes = compact(concat(var.attributes, ["workers"]))
+  attributes = ["workers"]
   tags       = local.tags
 
   context = module.this.context
@@ -168,10 +168,10 @@ data "aws_iam_instance_profile" "default" {
 
 module "autoscale_group" {
   source  = "cloudposse/ec2-autoscale-group/aws"
-  version = "0.22.0"
+  version = "0.23.0"
 
   enabled = local.enabled
-  tags    = merge(module.label.tags, var.autoscaling_group_tags)
+  tags    = merge(local.tags, var.autoscaling_group_tags)
 
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name

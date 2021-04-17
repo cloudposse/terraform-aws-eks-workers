@@ -33,6 +33,11 @@ output "autoscaling_group_name" {
   value       = module.eks_workers.autoscaling_group_name
 }
 
+output "autoscaling_group_tags" {
+  description = "The AutoScaling Group name"
+  value       = module.eks_workers.autoscaling_group_tags
+}
+
 output "autoscaling_group_arn" {
   description = "ARN of the AutoScaling Group"
   value       = module.eks_workers.autoscaling_group_arn
