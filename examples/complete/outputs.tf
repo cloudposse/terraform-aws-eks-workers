@@ -34,7 +34,7 @@ output "autoscaling_group_name" {
 }
 
 output "autoscaling_group_tags" {
-  description = "The AutoScaling Group name"
+  description = "A list of tag settings associated with the AutoScaling Group"
   value       = module.eks_workers.autoscaling_group_tags
 }
 

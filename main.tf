@@ -236,6 +236,9 @@ module "autoscale_group" {
   cpu_utilization_low_period_seconds      = var.cpu_utilization_low_period_seconds
   cpu_utilization_low_statistic           = var.cpu_utilization_low_statistic
   cpu_utilization_low_threshold_percent   = var.cpu_utilization_low_threshold_percent
+  metadata_http_endpoint_enabled          = var.metadata_http_endpoint_enabled
+  metadata_http_put_response_hop_limit    = var.metadata_http_put_response_hop_limit
+  metadata_http_tokens_required           = var.metadata_http_tokens_required
 
   context = module.this.context
 }
