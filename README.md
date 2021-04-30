@@ -1,3 +1,4 @@
+
 <!-- markdownlint-disable -->
 # terraform-aws-eks-workers [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-eks-workers.svg)](https://github.com/cloudposse/terraform-aws-eks-workers/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 <!-- markdownlint-restore -->
@@ -31,7 +32,6 @@ Terraform module to provision AWS resources to run EC2 worker nodes for [Elastic
 
 Instantiate it multiple times to create many EKS worker node pools with specific settings such as GPUs, EC2 instance types, or autoscale parameters.
 
-
 ---
 
 This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
@@ -61,7 +61,6 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 
 
 
-
 ## Introduction
 
 The module provisions the following resources:
@@ -71,6 +70,7 @@ The module provisions the following resources:
 - AutoScaling Group with Launch Template to configure and launch worker instances
 - AutoScaling Policies and CloudWatch Metric Alarms to monitor CPU utilization on the EC2 instances and scale the number of instance in the AutoScaling Group up or down.
 If you don't want to use the provided functionality, or want to provide your own policies, disable it by setting the variable `autoscaling_policies_enabled` to `"false"`.
+
 
 ## Security & Compliance [<img src="https://cloudposse.com/wp-content/uploads/2020/11/bridgecrew.svg" width="250" align="right" />](https://bridgecrew.io/)
 
@@ -206,7 +206,7 @@ Available targets:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_autoscale_group"></a> [autoscale\_group](#module\_autoscale\_group) | cloudposse/ec2-autoscale-group/aws | 0.23.0 |
+| <a name="module_autoscale_group"></a> [autoscale\_group](#module\_autoscale\_group) | cloudposse/ec2-autoscale-group/aws | 0.23.1 |
 | <a name="module_label"></a> [label](#module\_label) | cloudposse/label/null | 0.24.1 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
 
