@@ -168,7 +168,7 @@ data "aws_iam_instance_profile" "default" {
 
 module "autoscale_group" {
   source  = "cloudposse/ec2-autoscale-group/aws"
-  version = "0.23.1"
+  version = "0.24.0"
 
   enabled = local.enabled
   tags    = merge(local.tags, var.autoscaling_group_tags)
