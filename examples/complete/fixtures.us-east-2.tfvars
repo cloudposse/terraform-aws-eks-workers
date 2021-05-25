@@ -29,5 +29,3 @@ cluster_name = "eg-test-eks-workers-cluster"
 cluster_endpoint = ""
 
 cluster_certificate_authority_data = ""
-
-cluster_security_group_ingress_enabled = false

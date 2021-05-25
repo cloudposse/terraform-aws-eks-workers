@@ -13,32 +13,52 @@ variable "cluster_certificate_authority_data" {
   description = "The base64 encoded certificate data required to communicate with the cluster"
 }
 
-variable "cluster_security_group_ingress_enabled" {
-  type        = bool
-  description = "Whether to enable the EKS cluster Security Group as ingress to workers Security Group"
-  default     = true
-}
-
-variable "cluster_security_group_id" {
-  type        = string
-  description = "Security Group ID of the EKS cluster"
-}
-
 variable "vpc_id" {
   type        = string
   description = "VPC ID for the EKS cluster"
 }
 
-variable "allowed_security_groups" {
-  type        = list(string)
-  default     = []
-  description = "List of Security Group IDs to be allowed to connect to the worker nodes"
+variable "security_group_enabled" {
+  type        = bool
+  description = "Whether to create default Security Group for EKS worker nodes."
+  default     = true
 }
 
-variable "allowed_cidr_blocks" {
+variable "security_group_description" {
+  type        = string
+  default     = "Security Group for EKS worker nodes"
+  description = "The Security Group description."
+}
+
+variable "security_group_use_name_prefix" {
+  type        = bool
+  default     = false
+  description = "Whether to create a default Security Group with unique name beginning with the normalized prefix."
+}
+
+variable "security_group_rules" {
+  type = list(any)
+  default = [
+    {
+      type        = "egress"
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic"
+    }
+  ]
+  description = <<-EOT
+    A list of maps of Security Group rules. 
+    The values of map is fully complated with `aws_security_group_rule` resource. 
+    To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule .
+  EOT
+}
+
+variable "security_groups" {
   type        = list(string)
   default     = []
-  description = "List of CIDR blocks to be allowed to connect to the worker nodes"
+  description = "A list of Security Group IDs to associate with EKS worker nodes."
 }
 
 variable "metadata_http_endpoint_enabled" {
@@ -385,24 +405,6 @@ variable "aws_iam_instance_profile_name" {
   type        = string
   default     = ""
   description = "The name of the existing instance profile that will be used in autoscaling group for EKS workers. If empty will create a new instance profile."
-}
-
-variable "workers_security_group_id" {
-  type        = string
-  default     = ""
-  description = "The name of the existing security group that will be used in autoscaling group for EKS workers. If empty, a new security group will be created"
-}
-
-variable "use_existing_security_group" {
-  type        = bool
-  description = "If set to `true`, will use variable `workers_security_group_id` to run EKS workers using an existing security group that was created outside of this module, workaround for errors like `count cannot be computed`"
-  default     = false
-}
-
-variable "additional_security_group_ids" {
-  type        = list(string)
-  default     = []
-  description = "Additional list of security groups that will be attached to the autoscaling group"
 }
 
 variable "use_existing_aws_iam_instance_profile" {
