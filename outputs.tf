@@ -60,17 +60,17 @@ output "autoscaling_group_health_check_type" {
 
 output "security_group_id" {
   description = "ID of the worker nodes Security Group"
-  value       = join("", aws_security_group.default.*.id)
+  value       = module.security_group.id
 }
 
 output "security_group_arn" {
   description = "ARN of the worker nodes Security Group"
-  value       = join("", aws_security_group.default.*.arn)
+  value       = module.security_group.arn
 }
 
 output "security_group_name" {
   description = "Name of the worker nodes Security Group"
-  value       = join("", aws_security_group.default.*.name)
+  value       = module.security_group.name
 }
 
 output "workers_role_arn" {

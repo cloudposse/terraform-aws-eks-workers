@@ -24,17 +24,6 @@ variable "cluster_certificate_authority_data" {
   description = "The base64 encoded certificate data required to communicate with the cluster"
 }
 
-variable "cluster_security_group_ingress_enabled" {
-  type        = bool
-  description = "Whether to enable the EKS cluster Security Group as ingress to workers Security Group"
-}
-
-variable "cluster_security_group_id" {
-  type        = string
-  description = "Security Group ID of the EKS cluster"
-  default     = ""
-}
-
 variable "instance_type" {
   type        = string
   description = "Instance type to launch"
