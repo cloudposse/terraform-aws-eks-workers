@@ -183,6 +183,7 @@ module "autoscale_group" {
   metadata_http_endpoint_enabled          = var.metadata_http_endpoint_enabled
   metadata_http_put_response_hop_limit    = var.metadata_http_put_response_hop_limit
   metadata_http_tokens_required           = var.metadata_http_tokens_required
+  max_instance_lifetime                   = var.max_instance_lifetime
 
   context = module.this.context
 }
