@@ -72,7 +72,7 @@ resource "aws_iam_instance_profile" "default" {
 
 module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "0.3.1"
+  version = "0.3.2"
 
   use_name_prefix = var.security_group_use_name_prefix
   rules           = var.security_group_rules
