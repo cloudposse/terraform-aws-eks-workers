@@ -38,7 +38,7 @@ resource "aws_iam_role" "default" {
   name                 = module.label.id
   assume_role_policy   = join("", data.aws_iam_policy_document.assume_role.*.json)
   tags                 = module.label.tags
-  permissions_boundary = var.aws_iam_role_permissions_boundary
+  permissions_boundary = var.permissions_boundary
 }
 
 resource "aws_iam_role_policy_attachment" "amazon_eks_worker_node_policy" {
