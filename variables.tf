@@ -413,6 +413,12 @@ variable "use_existing_aws_iam_instance_profile" {
   default     = false
 }
 
+variable "permissions_boundary" {
+  type        = string
+  description = "Provide an existing permissions boundary to attach to the default role"
+  default     = null
+}
+
 variable "workers_role_policy_arns" {
   type        = list(string)
   default     = []
