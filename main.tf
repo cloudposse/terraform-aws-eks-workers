@@ -7,6 +7,16 @@ locals {
   workers_role_arn       = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
   workers_role_name      = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_name) : join("", aws_iam_role.default.*.name)
   security_group_enabled = module.this.enabled && var.security_group_enabled
+
+  userdata = templatefile("${path.module}/userdata.tpl", {
+    cluster_endpoint                = var.cluster_endpoint
+    certificate_authority_data      = var.cluster_certificate_authority_data
+    cluster_name                    = var.cluster_name
+    bootstrap_extra_args            = var.bootstrap_extra_args
+    kubelet_extra_args              = var.kubelet_extra_args
+    before_cluster_joining_userdata = var.before_cluster_joining_userdata
+    after_cluster_joining_userdata  = var.after_cluster_joining_userdata
+  })
 }
 
 module "label" {
@@ -98,29 +108,14 @@ data "aws_ami" "eks_worker" {
   owners = ["602401143452"] # Amazon
 }
 
-data "template_file" "userdata" {
-  count    = local.enabled ? 1 : 0
-  template = file("${path.module}/userdata.tpl")
-
-  vars = {
-    cluster_endpoint                = var.cluster_endpoint
-    certificate_authority_data      = var.cluster_certificate_authority_data
-    cluster_name                    = var.cluster_name
-    bootstrap_extra_args            = var.bootstrap_extra_args
-    kubelet_extra_args              = var.kubelet_extra_args
-    before_cluster_joining_userdata = var.before_cluster_joining_userdata
-    after_cluster_joining_userdata  = var.after_cluster_joining_userdata
-  }
-}
-
 data "aws_iam_instance_profile" "default" {
   count = local.enabled && var.use_existing_aws_iam_instance_profile ? 1 : 0
   name  = var.aws_iam_instance_profile_name
 }
 
-module "autoscale_group" {
+module "autoscale_roup" {
   source  = "cloudposse/ec2-autoscale-group/aws"
-  version = "0.27.0"
+  version = "0.30.1"
 
   enabled = local.enabled
   tags    = merge(local.tags, var.autoscaling_group_tags)
@@ -130,7 +125,7 @@ module "autoscale_group" {
 
   security_group_ids = compact(concat(module.security_group.*.id, var.security_groups))
 
-  user_data_base64 = base64encode(join("", data.template_file.userdata.*.rendered))
+  user_data_base64 = base64encode(local.userdata)
 
   instance_type                           = var.instance_type
   subnet_ids                              = var.subnet_ids
