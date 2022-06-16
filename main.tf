@@ -113,7 +113,7 @@ data "aws_iam_instance_profile" "default" {
   name  = var.aws_iam_instance_profile_name
 }
 
-module "autoscale_roup" {
+module "autoscale_group" {
   source  = "cloudposse/ec2-autoscale-group/aws"
   version = "0.30.1"
 
