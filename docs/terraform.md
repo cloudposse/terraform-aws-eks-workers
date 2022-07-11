@@ -80,7 +80,7 @@
 | <a name="input_disable_api_termination"></a> [disable\_api\_termination](#input\_disable\_api\_termination) | If `true`, enables EC2 Instance Termination Protection | `bool` | `false` | no |
 | <a name="input_ebs_optimized"></a> [ebs\_optimized](#input\_ebs\_optimized) | If true, the launched EC2 instance will be EBS-optimized | `bool` | `false` | no |
 | <a name="input_eks_worker_ami_name_filter"></a> [eks\_worker\_ami\_name\_filter](#input\_eks\_worker\_ami\_name\_filter) | AMI name filter to lookup the most recent EKS AMI if `image_id` is not provided | `string` | `"amazon-eks-node-*"` | no |
-| <a name="input_eks_worker_ami_name_regex"></a> [eks\_worker\_ami\_name\_regex](#input\_eks\_worker\_ami\_name\_regex) | A regex string to apply to the AMI list returned by AWS | `string` | `"^amazon-eks-node-[1-9,.]+-v[0-9]{8}$"` | no |
+| <a name="input_eks_worker_ami_name_regex"></a> [eks\_worker\_ami\_name\_regex](#input\_eks\_worker\_ami\_name\_regex) | A regex string to apply to the AMI list returned by AWS | `string` | `"^amazon-eks-node-[0-9,.]+-v[0-9]{8}$"` | no |
 | <a name="input_elastic_gpu_specifications"></a> [elastic\_gpu\_specifications](#input\_elastic\_gpu\_specifications) | Specifications of Elastic GPU to attach to the instances | <pre>object({<br>    type = string<br>  })</pre> | `null` | no |
 | <a name="input_enable_monitoring"></a> [enable\_monitoring](#input\_enable\_monitoring) | Enable/disable detailed monitoring | `bool` | `true` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
