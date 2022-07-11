@@ -37,39 +37,20 @@ module "subnets" {
 module "eks_workers" {
   source = "../../"
 
-  instance_type                      = var.instance_type
-  vpc_id                             = module.vpc.vpc_id
-  subnet_ids                         = module.subnets.public_subnet_ids
-  health_check_type                  = var.health_check_type
-  min_size                           = var.min_size
-  max_size                           = var.max_size
-  wait_for_capacity_timeout          = var.wait_for_capacity_timeout
-  cluster_name                       = var.cluster_name
-  cluster_endpoint                   = var.cluster_endpoint
-  cluster_certificate_authority_data = var.cluster_certificate_authority_data
-  bootstrap_extra_args               = "--use-max-pods false"
-  kubelet_extra_args                 = "--node-labels=purpose=ci-worker"
-
-  security_group_rules = [
-    {
-      type                     = "egress"
-      from_port                = 0
-      to_port                  = 65535
-      protocol                 = "-1"
-      cidr_blocks              = ["0.0.0.0/0"]
-      source_security_group_id = null
-      description              = "Allow all outbound traffic"
-    },
-    {
-      type                     = "ingress"
-      from_port                = 0
-      to_port                  = 65535
-      protocol                 = "-1"
-      cidr_blocks              = []
-      source_security_group_id = module.vpc.vpc_default_security_group_id
-      description              = "Allow all inbound traffic from trusted Security Groups"
-    },
-  ]
+  instance_type                          = var.instance_type
+  vpc_id                                 = module.vpc.vpc_id
+  subnet_ids                             = module.subnets.public_subnet_ids
+  health_check_type                      = var.health_check_type
+  min_size                               = var.min_size
+  max_size                               = var.max_size
+  wait_for_capacity_timeout              = var.wait_for_capacity_timeout
+  cluster_name                           = var.cluster_name
+  cluster_endpoint                       = var.cluster_endpoint
+  cluster_certificate_authority_data     = var.cluster_certificate_authority_data
+  cluster_security_group_id              = var.cluster_security_group_id
+  cluster_security_group_ingress_enabled = var.cluster_security_group_ingress_enabled
+  bootstrap_extra_args                   = "--use-max-pods false"
+  kubelet_extra_args                     = "--node-labels=purpose=ci-worker"
 
   # Auto-scaling policies and CloudWatch metric alarms
   autoscaling_policies_enabled           = var.autoscaling_policies_enabled

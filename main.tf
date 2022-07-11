@@ -4,9 +4,8 @@ locals {
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 
-  workers_role_arn       = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
-  workers_role_name      = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_name) : join("", aws_iam_role.default.*.name)
-  security_group_enabled = module.this.enabled && var.security_group_enabled
+  workers_role_arn  = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
+  workers_role_name = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_name) : join("", aws_iam_role.default.*.name)
 }
 
 module "label" {
@@ -70,17 +69,67 @@ resource "aws_iam_instance_profile" "default" {
   role  = join("", aws_iam_role.default.*.name)
 }
 
-module "security_group" {
-  source  = "cloudposse/security-group/aws"
-  version = "0.3.1"
+resource "aws_security_group" "default" {
+  count       = local.enabled && var.use_existing_security_group == false ? 1 : 0
+  name        = module.label.id
+  description = "Security Group for EKS worker nodes"
+  vpc_id      = var.vpc_id
+  tags        = module.label.tags
+}
 
-  use_name_prefix = var.security_group_use_name_prefix
-  rules           = var.security_group_rules
-  description     = var.security_group_description
-  vpc_id          = var.vpc_id
+resource "aws_security_group_rule" "egress" {
+  count             = local.enabled && var.use_existing_security_group == false ? 1 : 0
+  description       = "Allow all egress traffic"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = join("", aws_security_group.default.*.id)
+  type              = "egress"
+}
 
-  enabled = local.security_group_enabled
-  context = module.label.context
+resource "aws_security_group_rule" "ingress_self" {
+  count                    = local.enabled && var.use_existing_security_group == false ? 1 : 0
+  description              = "Allow nodes to communicate with each other"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = "-1"
+  security_group_id        = join("", aws_security_group.default.*.id)
+  source_security_group_id = join("", aws_security_group.default.*.id)
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_cluster" {
+  count                    = local.enabled && var.cluster_security_group_ingress_enabled && var.use_existing_security_group == false ? 1 : 0
+  description              = "Allow worker kubelets and pods to receive communication from the cluster control plane"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = "-1"
+  security_group_id        = join("", aws_security_group.default.*.id)
+  source_security_group_id = var.cluster_security_group_id
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_security_groups" {
+  count                    = local.enabled && var.use_existing_security_group == false ? length(var.allowed_security_groups) : 0
+  description              = "Allow inbound traffic from existing Security Groups"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = "-1"
+  source_security_group_id = var.allowed_security_groups[count.index]
+  security_group_id        = join("", aws_security_group.default.*.id)
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress_cidr_blocks" {
+  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 && var.use_existing_security_group == false ? 1 : 0
+  description       = "Allow inbound traffic from CIDR blocks"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = var.allowed_cidr_blocks
+  security_group_id = join("", aws_security_group.default.*.id)
+  type              = "ingress"
 }
 
 data "aws_ami" "eks_worker" {
@@ -127,7 +176,14 @@ module "autoscale_group" {
   image_id                  = var.use_custom_image_id ? var.image_id : join("", data.aws_ami.eks_worker.*.id)
   iam_instance_profile_name = var.use_existing_aws_iam_instance_profile == false ? join("", aws_iam_instance_profile.default.*.name) : var.aws_iam_instance_profile_name
 
-  security_group_ids = compact(concat(module.security_group.*.id, var.security_groups))
+  security_group_ids = compact(
+    concat(
+      [
+        var.use_existing_security_group == false ? join("", aws_security_group.default.*.id) : var.workers_security_group_id
+      ],
+      var.additional_security_group_ids
+    )
+  )
 
   user_data_base64 = base64encode(join("", data.template_file.userdata.*.rendered))
 
