@@ -11,7 +11,7 @@ locals {
 
 module "label" {
   source  = "cloudposse/label/null"
-  version = "0.25.0"
+  version = "0.24.1"
 
   attributes = ["workers"]
   tags       = local.tags
