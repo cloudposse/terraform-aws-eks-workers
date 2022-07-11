@@ -60,16 +60,16 @@ func TestExamplesComplete(t *testing.T) {
 	// autoscaling_group_name = eg-test-suite-20210416185727403200000006
 	autoscalingGroupName := terraform.Output(t, terraformOptions, "autoscaling_group_name")
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, regexp.MustCompile(`^`+expectedPrefix+`-\d+$`), autoscalingGroupName, "Autoscaling Group name should be our expected prefix plus a random suffix")
+	assert.Regexp(t, regexp.MustCompile(`^` + expectedPrefix + `-\d+$`) , autoscalingGroupName, "Autoscaling Group name should be our expected prefix plus a random suffix")
 
 	// Run `terraform output` to get the value of an output variable
 	var tags []TerraformMapString
 
 	terraform.OutputStruct(t, terraformOptions, "autoscaling_group_tags", &tags)
 	expectedTag := TerraformMapString{
-		"key":                 "Name",
-		"value":               expectedPrefix,
-		"propagate_at_launch": "true",
+			"key":                 "Name",
+			"value":               expectedPrefix,
+			"propagate_at_launch": "true",
 	}
 
 	assert.Contains(t, tags, expectedTag, `Tag "Name" should match eks-workers module ID`)
@@ -88,25 +88,15 @@ func TestExamplesComplete(t *testing.T) {
 	launchTemplateId := terraform.Output(t, terraformOptions, "launch_template_id")
 	// Verify we're getting back the outputs we expect
 	// arn:aws:ec2:us-east-2:126450723953:launch-template/
-	assert.Equal(t, "arn:aws:ec2:us-east-2:126450723953:launch-template/"+launchTemplateId, launchTemplateArn)
+	assert.Equal(t, "arn:aws:ec2:us-east-2:126450723953:launch-template/" + launchTemplateId, launchTemplateArn)
 
 	// Run `terraform output` to get the value of an output variable
 	securityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
 	// Verify we're getting back the outputs we expect
-	assert.Equal(t, expectedPrefix+"-workers", securityGroupName)
-
-	// Run `terraform output` to get the value of an output variable
-	securityGroupID := terraform.Output(t, terraformOptions, "security_group_id")
-	// Verify we're getting back the outputs we expect
-	assert.Contains(t, securityGroupID, "sg-", "SG ID should contains substring 'sg-'")
-
-	// Run `terraform output` to get the value of an output variable
-	securityGroupARN := terraform.Output(t, terraformOptions, "security_group_arn")
-	// Verify we're getting back the outputs we expect
-	assert.Contains(t, securityGroupARN, "arn:aws:ec2", "SG ID should contains substring 'arn:aws:ec2'")
+	assert.Equal(t, expectedPrefix + "-workers", securityGroupName)
 
 	// Run `terraform output` to get the value of an output variable
 	workerRoleName := terraform.Output(t, terraformOptions, "workers_role_name")
 	// Verify we're getting back the outputs we expect
-	assert.Equal(t, expectedPrefix+"-workers", workerRoleName)
+	assert.Equal(t, expectedPrefix + "-workers", workerRoleName)
 }
