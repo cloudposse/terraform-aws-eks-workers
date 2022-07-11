@@ -514,3 +514,9 @@ variable "elastic_gpu_specifications" {
 
   default = null
 }
+
+variable "max_instance_lifetime" {
+  description = "The maximum amount of time, in seconds, that an instance can be in service, values must be either equal to 0 or between 604800 and 31536000 seconds"
+  type        = number
+  default     = null
+}
