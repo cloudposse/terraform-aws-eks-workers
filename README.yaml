@@ -118,27 +118,7 @@ usage: |2-
       cluster_name                       = var.cluster_name
       cluster_endpoint                   = var.cluster_endpoint
       cluster_certificate_authority_data = var.cluster_certificate_authority_data
-
-      security_group_rules = [
-        {
-          type                     = "egress"
-          from_port                = 0
-          to_port                  = 65535
-          protocol                 = "-1"
-          cidr_blocks              = ["0.0.0.0/0"]
-          source_security_group_id = null
-          description              = "Allow all outbound traffic"
-        },
-        {
-          type                     = "ingress"
-          from_port                = 0
-          to_port                  = 65535
-          protocol                 = "-1"
-          cidr_blocks              = []
-          source_security_group_id = "sg-XXXXXXXXX"
-          description              = "Allow all inbound traffic from Security Group ID of the EKS cluster"
-        }
-      ]
+      cluster_security_group_id          = var.cluster_security_group_id
 
       # Auto-scaling policies and CloudWatch metric alarms
       autoscaling_policies_enabled           = var.autoscaling_policies_enabled
@@ -157,5 +137,3 @@ contributors:
     github: "aknysh"
   - name: "Igor Rodionov"
     github: "goruha"
-  - name: Vladimir Syromyatnikov
-    github: SweetOps
