@@ -113,38 +113,6 @@ provider "kubernetes" {
   }
 }
 
-# resource "kubernetes_config_map" "aws_auth_ignore_changes" {
-#   count      = local.enabled && var.apply_config_map_aws_auth && var.kubernetes_config_map_ignore_role_changes ? 1 : 0
-#   depends_on = [null_resource.wait_for_cluster]
-
-#   metadata {
-#     name      = "aws-auth-2"
-#     namespace = "kube-system"
-#   }
-
-#   data = {
-#     mapRoles    = yamlencode(distinct(local.map_worker_role))
-#   }
-
-#   lifecycle {
-#     ignore_changes = [data["mapRoles"]]
-#   }
-# }
-
-# resource "kubernetes_config_map" "aws_auth" {
-#   count      = local.enabled && var.apply_config_map_aws_auth && var.kubernetes_config_map_ignore_role_changes == false ? 1 : 0
-#   depends_on = [null_resource.wait_for_cluster]
-
-#   metadata {
-#     name      = "aws-auth-2"
-#     namespace = "kube-system"
-#   }
-
-#   data = {
-#     mapRoles    = replace(yamlencode(distinct(local.map_worker_role)), "\"", local.yaml_quote)
-#   }
-# }
-
 resource "kubernetes_config_map_v1_data" "aws_auth" {
   count      = local.enabled && var.apply_config_map_aws_auth && var.kubernetes_config_map_ignore_role_changes ? 1 : 0
   depends_on = [null_resource.wait_for_cluster]
