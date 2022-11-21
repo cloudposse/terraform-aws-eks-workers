@@ -40,10 +40,10 @@ locals {
 
   # workers_role_arn  = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
 
-  cluster_endpoint     = var.cluster_endpoint # use `join` instead of `one` to keep the value a string
+  cluster_endpoint          = var.cluster_endpoint # use `join` instead of `one` to keep the value a string
   cluster_auth_map_endpoint = var.apply_config_map_aws_auth ? local.cluster_endpoint : var.dummy_kubeapi_server
 
-  certificate_authority_data               = var.cluster_certificate_authority_data
+  certificate_authority_data = var.cluster_certificate_authority_data
 
   # Add worker nodes role ARNs (could be from many un-managed worker groups) to the ConfigMap
   # Note that we don't need to do this for managed Node Groups since EKS adds their roles to the ConfigMap automatically
@@ -60,7 +60,7 @@ locals {
 }
 
 resource "null_resource" "wait_for_cluster" {
-  count      = local.enabled && var.apply_config_map_aws_auth ? 1 : 0
+  count = local.enabled && var.apply_config_map_aws_auth ? 1 : 0
 
   provisioner "local-exec" {
     command     = var.wait_for_cluster_command
@@ -116,7 +116,7 @@ provider "kubernetes" {
 resource "kubernetes_config_map_v1_data" "aws_auth" {
   count      = local.enabled && var.apply_config_map_aws_auth && var.kubernetes_config_map_ignore_role_changes ? 1 : 0
   depends_on = [null_resource.wait_for_cluster]
-  force = true
+  force      = true
 
   metadata {
     name      = "aws-auth"
@@ -124,7 +124,7 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
   }
 
   data = {
-    mapRoles    = yamlencode(distinct(local.map_worker_role))
+    mapRoles = yamlencode(distinct(local.map_worker_role))
   }
 
 }
@@ -132,7 +132,7 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
 resource "kubernetes_config_map_v1_data" "aws_auth_ignore_changes" {
   count      = local.enabled && var.apply_config_map_aws_auth && var.kubernetes_config_map_ignore_role_changes == false ? 1 : 0
   depends_on = [null_resource.wait_for_cluster]
-  force = true
+  force      = true
 
   metadata {
     name      = "aws-auth"
@@ -140,7 +140,7 @@ resource "kubernetes_config_map_v1_data" "aws_auth_ignore_changes" {
   }
 
   data = {
-    mapRoles    = replace(yamlencode(distinct(local.map_worker_role)), "\"", local.yaml_quote)
+    mapRoles = replace(yamlencode(distinct(local.map_worker_role)), "\"", local.yaml_quote)
   }
 
 }
