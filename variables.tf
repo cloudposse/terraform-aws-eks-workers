@@ -24,6 +24,36 @@ variable "cluster_security_group_id" {
   description = "Security Group ID of the EKS cluster"
 }
 
+variable "kubeconfig_path_enabled" {
+  type        = bool
+  description = "If `true`, configure the Kubernetes provider with `kubeconfig_path` and use it for authenticating to the EKS cluster"
+  default     = false
+}
+
+variable "kubeconfig_path" {
+  type        = string
+  description = "The Kubernetes provider `config_path` setting to use when `kubeconfig_path_enabled` is `true`"
+  default     = ""
+}
+
+variable "kubeconfig_context" {
+  type        = string
+  description = "Context to choose from the Kubernetes kube config file"
+  default     = ""
+}
+
+variable "kubernetes_config_map_ignore_role_changes" {
+  type        = bool
+  description = "Set to `true` to ignore IAM role changes in the Kubernetes Auth ConfigMap"
+  default     = true
+}
+
+variable "apply_config_map_aws_auth" {
+  type        = bool
+  description = "Whether to apply the ConfigMap to allow worker nodes to join the EKS cluster and allow additional users, accounts and roles to acces the cluster"
+  default     = true
+}
+
 variable "vpc_id" {
   type        = string
   description = "VPC ID for the EKS cluster"
@@ -519,4 +549,77 @@ variable "max_instance_lifetime" {
   description = "The maximum amount of time, in seconds, that an instance can be in service, values must be either equal to 0 or between 604800 and 31536000 seconds"
   type        = number
   default     = null
+}
+
+variable "local_exec_interpreter" {
+  type        = list(string)
+  description = "shell to use for local_exec"
+  default     = ["/bin/sh", "-c"]
+}
+
+variable "wait_for_cluster_command" {
+  type        = string
+  description = "`local-exec` command to execute to determine if the EKS cluster is healthy. Cluster endpoint URL is available as environment variable `ENDPOINT`"
+  ## --max-time is per attempt, --retry is the number of attempts
+  ## Approx. total time limit is (max-time + retry-delay) * retry seconds
+  default = "if test -n \"$ENDPOINT\"; then curl --silent --fail --retry 30 --retry-delay 10 --retry-connrefused --max-time 11 --insecure --output /dev/null $ENDPOINT/healthz; fi"
+}
+
+variable "kube_data_auth_enabled" {
+  type        = bool
+  description = <<-EOT
+    If `true`, use an `aws_eks_cluster_auth` data source to authenticate to the EKS cluster.
+    Disabled by `kubeconfig_path_enabled` or `kube_exec_auth_enabled`.
+    EOT
+  default     = true
+}
+variable "kube_exec_auth_enabled" {
+  type        = bool
+  description = <<-EOT
+    If `true`, use the Kubernetes provider `exec` feature to execute `aws eks get-token` to authenticate to the EKS cluster.
+    Disabled by `kubeconfig_path_enabled`, overrides `kube_data_auth_enabled`.
+    EOT
+  default     = false
+}
+
+variable "kube_exec_auth_role_arn" {
+  type        = string
+  description = "The role ARN for `aws eks get-token` to use"
+  default     = ""
+}
+
+variable "kube_exec_auth_role_arn_enabled" {
+  type        = bool
+  description = "If `true`, pass `kube_exec_auth_role_arn` as the role ARN to `aws eks get-token`"
+  default     = false
+}
+
+variable "kube_exec_auth_aws_profile" {
+  type        = string
+  description = "The AWS config profile for `aws eks get-token` to use"
+  default     = ""
+}
+
+variable "kube_exec_auth_aws_profile_enabled" {
+  type        = bool
+  description = "If `true`, pass `kube_exec_auth_aws_profile` as the `profile` to `aws eks get-token`"
+  default     = false
+}
+
+variable "dummy_kubeapi_server" {
+  type        = string
+  default     = "https://jsonplaceholder.typicode.com"
+  description = <<-EOT
+    URL of a dummy API server for the Kubernetes server to use when the real one is unknown.
+    This is a workaround to ignore connection failures that break Terraform even though the results do not matter.
+    You can disable it by setting it to `null`; however, as of Kubernetes provider v2.3.2, doing so _will_
+    cause Terraform to fail in several situations unless you provide a valid `kubeconfig` file
+    via `kubeconfig_path` and set `kubeconfig_path_enabled` to `true`.
+    EOT
+}
+
+variable "aws_auth_yaml_strip_quotes" {
+  type        = bool
+  description = "If true, remove double quotes from the generated aws-auth ConfigMap YAML to reduce spurious diffs in plans"
+  default     = true
 }
