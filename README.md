@@ -177,8 +177,6 @@ For a complete example, see [examples/complete](examples/complete)
 <!-- markdownlint-disable -->
 ## Makefile Targets
 ```text
-Available targets:
-
 ```
 <!-- markdownlint-restore -->
 <!-- markdownlint-disable -->
