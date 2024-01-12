@@ -1,11 +1,8 @@
 
 <!-- markdownlint-disable -->
-# terraform-aws-eks-workers [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-eks-workers.svg)](https://github.com/cloudposse/terraform-aws-eks-workers/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
+# terraform-aws-eks-workers<a href="https://cpco.io/homepage"><img align="right" src="https://cloudposse.com/logo-300x69.svg" width="150" /></a> [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-eks-workers.svg)](https://github.com/cloudposse/terraform-aws-eks-workers/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 <!-- markdownlint-restore -->
 
-[![README Header][readme_header_img]][readme_header_link]
-
-[![Cloud Posse][logo]](https://cpco.io/homepage)
 
 <!--
 
@@ -32,24 +29,17 @@ Terraform module to provision AWS resources to run EC2 worker nodes for [Elastic
 
 Instantiate it multiple times to create many EKS worker node pools with specific settings such as GPUs, EC2 instance types, or autoscale parameters.
 
+
 ---
+> [!NOTE]
+> This project is part of Cloud Posse's comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
+> <a href="https://cpco.io/terraform-modules"><img src="https://docs.cloudposse.com/images/terraform-open-source-modules.svg" align="right" /></a>
+>
+> It's 100% Open Source and licensed under the [APACHE2](LICENSE).
+>
+> We literally have [*hundreds of terraform modules*][terraform_modules] that are Open Source and well-maintained. Check them out!
 
-This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
-<a href="https://cpco.io/terraform-modules"><img src="https://docs.cloudposse.com/images/terraform-open-source-modules.svg" align="right" /></a>
-
-
-It's 100% Open Source and licensed under the [APACHE2](LICENSE).
-
-
-
-
-
-
-
-We literally have [*hundreds of terraform modules*][terraform_modules] that are Open Source and well-maintained. Check them out!
-
-
-
+[![README Header][readme_header_img]][readme_header_link]
 
 
 ## Introduction
@@ -69,7 +59,7 @@ If you don't want to use the provided functionality, or want to provide your own
 
 
 > **Important**
-> We do not pin modules to versions in our examples because of the
+> We do not pin modules to versions in Cloud Posse's examples because of the
 > difficulty of keeping the versions in the documentation in sync with the latest released versions.
 > We highly recommend that in your code you pin the version to the exact version you are
 > using so that your infrastructure remains stable, and update versions in a
@@ -354,7 +344,7 @@ Please use the [issue tracker](https://github.com/cloudposse/terraform-aws-eks-w
 
 ### 💻 Developing
 
-If you are interested in being a contributor and want to get involved in developing this project or [help out](https://cpco.io/help-out) with our other projects, we would love to hear from you! Shoot us an [email][email].
+If you are interested in being a contributor and want to get involved in developing this project or [help out](https://cpco.io/help-out) with Cloud Posse's other projects, we would love to hear from you! Shoot us an [email][email].
 
 In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
@@ -432,7 +422,7 @@ under the License.
 
 All other trademarks referenced herein are the property of their respective owners.
 ---
-Copyright © 2017-2023 [Cloud Posse, LLC](https://cpco.io/copyright)
+Copyright © 2017-2024 [Cloud Posse, LLC](https://cpco.io/copyright)
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]
 <!-- markdownlint-disable -->
