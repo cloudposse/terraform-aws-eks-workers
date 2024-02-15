@@ -4,8 +4,8 @@ locals {
     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 
-  workers_role_arn  = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_arn) : join("", aws_iam_role.default.*.arn)
-  workers_role_name = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default.*.role_name) : join("", aws_iam_role.default.*.name)
+  workers_role_arn  = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default[*].role_arn) : join("", aws_iam_role.default[*].arn)
+  workers_role_name = var.use_existing_aws_iam_instance_profile ? join("", data.aws_iam_instance_profile.default[*].role_name) : join("", aws_iam_role.default[*].name)
 
   userdata = templatefile("${path.module}/userdata.tpl", {
     cluster_endpoint                = var.cluster_endpoint
