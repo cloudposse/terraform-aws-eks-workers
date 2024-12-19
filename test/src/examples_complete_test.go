@@ -103,9 +103,9 @@ func TestExamplesComplete(t *testing.T) {
 	// Run `terraform output` to get the value of an output variable
 	launchTemplateArn := terraform.Output(t, terraformOptions, "launch_template_arn")
 	launchTemplateId := terraform.Output(t, terraformOptions, "launch_template_id")
-	// Verify we're getting back the outputs we expect
+	// Verify we're getting back the outputs we expect, but allow for any region or account
 	// arn:aws:ec2:us-east-2:126450723953:launch-template/
-	assert.Equal(t, "arn:aws:ec2:us-east-2:126450723953:launch-template/"+launchTemplateId, launchTemplateArn)
+	assert.Regexp(t, "arn:aws:ec2:[^:]+:\\d{12}:launch-template/"+launchTemplateId, launchTemplateArn)
 
 	// Run `terraform output` to get the value of an output variable
 	securityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
@@ -118,7 +118,6 @@ func TestExamplesComplete(t *testing.T) {
 	assert.Equal(t, expectedPrefix+"-workers", workerRoleName)
 }
 
-/*
 func TestExamplesCompleteDisabled(t *testing.T) {
 	t.Parallel()
 	randID := strings.ToLower(random.UniqueId())
@@ -158,5 +157,3 @@ func TestExamplesCompleteDisabled(t *testing.T) {
 	// Verify we're getting back the outputs we expect
 	assert.Empty(t, datadogMonitorNames, "When disabled, module should have no outputs.")
 }
-
-*/
